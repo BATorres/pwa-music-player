@@ -331,14 +331,29 @@ async function fetchYouTubePlaylistViaYtDlp(url) {
 
   const data = JSON.parse(stdout);
   const entries = data.entries || [];
-  return entries
-    .filter((e) => e && e.id && YT_ID_RE.test(e.id))
-    .map((e) => ({
+  const filteredEntries = entries.filter((e) => e && e.id && YT_ID_RE.test(e.id));
+  let modifiedEntries = [];
+
+  for (const e of filteredEntries) { 
+    const entry = {
       videoId: e.id,
       title: e.title || e.id,
-      artist: e.uploader || e.channel || '',
+      artist: await enrichMetadata(e.id),
       duration: typeof e.duration === 'number' ? e.duration : null,
-    }));
+    };
+    modifiedEntries.push(entry);
+  }
+
+  return modifiedEntries;
+}
+
+// Best-effort enrichment of playlist entries with artist metadata from youtubei.js
+async function enrichMetadata(youtubeId) {
+  const innerTubeInstance = await getInnertube();
+  const songInfo = await innerTubeInstance.music.getInfo(youtubeId);
+
+  // If is needed, it could return other properties
+  return songInfo?.basic_info?.author;
 }
 
 const isDev = process.env.NODE_ENV === 'development';
