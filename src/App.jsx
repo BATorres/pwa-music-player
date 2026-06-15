@@ -472,7 +472,7 @@ export default function App() {
       <img src={assets.frame} className="layer" alt="" draggable={false} />
 
       {/* Window title */}
-      <div className="window-title">cupid player</div>
+      <div className="window-title">Karlita's Awesome Mix</div>
 
       {/* Record player centered in frame */}
       <img src={assets.recordPlayer} className="record-player" alt="" draggable={false} />
@@ -711,13 +711,12 @@ export default function App() {
                 blue
               </button>
             </div>
-            <div className="settings-label">music</div>
+            <div className="settings-label">Wanna listen something else?</div>
+            <div className="settings-label">You can copy/paste a YouTube playlist URL!</div>
             <SettingsDropdown
               value={musicService}
               options={[
                 { value: 'local', label: 'local' },
-                { value: 'spotify', label: 'spotify' },
-                { value: 'apple', label: 'apple' },
                 { value: 'youtube', label: 'youtube' },
               ]}
               onChange={(next) => {

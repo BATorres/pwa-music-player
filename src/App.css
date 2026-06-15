@@ -134,18 +134,22 @@
   padding: calc(6 / 306 * 100vw);
   width: calc(140 / 306 * 100vw);
   max-height: calc(260 / 306 * 100vw);
+  overflow-x: break-word;
   overflow-y: auto;
   scrollbar-width: none;
   display: flex;
   flex-direction: column;
   gap: calc(4 / 306 * 100vw);
+  word-break: break-all;
 }
 
 .settings-label {
   font-family: 'Rainyhearts', monospace;
   font-size: calc(11 / 306 * 100vw);
   color: var(--color-panel-text);
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .settings-theme-row {
