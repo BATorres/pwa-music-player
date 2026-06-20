@@ -604,9 +604,26 @@ ipcMain.handle('get-stream-url', async (_e, title, artist) => {
 
 ipcMain.handle('get-local-playlist', async () => {
   try {
-    const raw = await fs.promises.readFile(userPlaylistFile(), 'utf8');
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    const { parseFile } = await import('music-metadata');
+    const localFiles = await fs.promises.readdir(userAudioDir());
+    const localPlaylist = localFiles.filter((entry) => /\.(mp3|m4a|flac|wav|aac)$/i.test(entry));
+    let playlist = [];
+
+    for (const track of localPlaylist) {
+      const trackPath = path.join(userAudioDir(), track);
+      const metadata = await parseFile(trackPath);
+      const picture = metadata.common.picture?.[0];
+      const art = picture ? `data:${picture.format};base64,${Buffer.from(picture.data).toString('base64')}` : null;
+      const parsedTrack = {
+        title: metadata.common?.title ?? 'Unknown Title',
+        artist: metadata.common?.artist ?? 'Unknown Artist',
+        album: metadata.common?.album ?? 'Unknown Album',
+        file: track,
+        art,
+      };
+      playlist.push(parsedTrack);
+    }
+    return playlist;
   } catch (err) {
     if (err.code !== 'ENOENT') console.warn('[playlist.json]', err.message);
     return [];
