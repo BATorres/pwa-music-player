@@ -26,6 +26,10 @@ import progressBarStars from '../assets/progress_bar_stars.png';
 import star from '../assets/star.png';
 import starSelected from '../assets/star_selected.png';
 
+import progressBarThorns from '../assets/progress_bar_thorns.png';
+import ghost from '../assets/ghost.png';
+import ghostSelected from '../assets/ghost_selected.png';
+
 function useResize(corner) {
   const onMouseDown = useCallback((e) => {
     e.preventDefault();
@@ -359,7 +363,7 @@ export default function App() {
 
   const [recordFrame, setRecordFrame] = useState(0);
   const [needleFrame, setNeedleFrame] = useState(0);
-  const [isPink, setIsPink] = useState(theme === 'pink');
+  const [isPink, setIsPink] = useState(theme === 'black');
   const [swapping, setSwapping] = useState(false);
   const [needleLifted, setNeedleLifted] = useState(false);
   const [starHovered, setStarHovered] = useState(false);
@@ -467,7 +471,7 @@ export default function App() {
   const resizeBR = useResize('bottom-right');
 
   return (
-    <div className={`player ${theme === 'blue' ? 'theme-blue' : ''}`}>
+    <div className={`player ${theme === 'black' ? 'theme-black' : ''}`}>
       {/* Base frame */}
       <img src={assets.frame} className="layer" alt="" draggable={false} />
 
@@ -475,6 +479,7 @@ export default function App() {
       <div className="window-title">Karlita's Awesome Mix</div>
 
       {/* Record player centered in frame */}
+      <img src={assets.recordPlayerTop} className="record-player-top" alt="" draggable={false} />
       <img src={assets.recordPlayer} className="record-player" alt="" draggable={false} />
       <img
         src={currentFrames[recordFrame]}
@@ -501,12 +506,15 @@ export default function App() {
       <img src={assets.frameNoBg} className="layer frame-overlay" alt="" draggable={false} />
 
       {/* Decorative */}
-      <img src={assets.plant} className="layer layer-ui" alt="" draggable={false} />
+      {/* <img src={assets.plant} className="layer layer-ui" alt="" draggable={false} /> */}
+
+      {/* Decorative */}
+      {/* <img src={assets.recordPlayerTop} className="layer layer-ui" alt="" draggable={false} /> */}
 
       {/* Progress bar layers */}
       <img src={assets.progressBar} className="layer layer-ui" alt="" draggable={false} />
       <img
-        src={progressBarStars}
+        src={progressBarThorns}
         className="layer layer-ui"
         alt=""
         draggable={false}
@@ -515,7 +523,7 @@ export default function App() {
         }}
       />
       <img
-        src={starHovered ? starSelected : star}
+        src={starHovered ? ghostSelected : ghost}
         className={`layer layer-ui star-indicator ${starHovered ? 'star-hovered' : ''}`}
         alt=""
         draggable={false}
@@ -553,7 +561,7 @@ export default function App() {
       <img src={assets.exitButton} className="layer layer-ui" alt="" draggable={false} />
 
       {/* Settings button layer */}
-      <img src={assets.settings} className="layer layer-ui settings-layer" alt="" draggable={false} />
+      {/* <img src={assets.settings} className="layer layer-ui settings-layer" alt="" draggable={false} /> */}
 
       {/* SVG clip-path for pixel-art album mask */}
       <svg width="0" height="0" style={{ position: 'absolute' }}>
@@ -579,7 +587,7 @@ export default function App() {
       )}
 
       {/* Album frame overlay */}
-      <img src={assets.albumFrame} className="layer album-frame-layer" alt="" draggable={false} />
+      {<img src={assets.albumFrame} className="layer album-frame-layer" alt="" draggable={false} />}
 
       {/* Now playing section */}
       <div className="now-playing">
@@ -709,6 +717,12 @@ export default function App() {
                 onClick={() => { if (theme !== 'blue') toggleTheme(); }}
               >
                 blue
+              </button>
+              <button
+                className={`settings-theme-btn ${theme === 'black' ? 'active' : ''}`}
+                onClick={() => { if (theme !== 'black') toggleTheme(); }}
+              >
+                black
               </button>
             </div>
             <div className="settings-label">Wanna listen something else?</div>

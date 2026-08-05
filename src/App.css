@@ -5,10 +5,10 @@
   overflow: hidden;
   border-radius: calc(5 / 306 * 100vw); /* match frame's pixel-art rounded corners */
   clip-path: inset(0 0 0 calc(3 / 306 * 100vw));
-  --color-title: #78364F;
-  --color-primary: #5a3a4a;
+  /* --color-title: #78364F; */
+  /* --color-primary: #5a3a4a;
   --color-secondary: #8a6a7a;
-  --color-panel-text: #F6CFC8;
+  --color-panel-text: #F6CFC8; */
 }
 
 .player.theme-blue {
@@ -17,7 +17,6 @@
   --color-secondary: #1a6b6b;
   --color-panel-text: #C8D3F6;
 }
-
 
 .layer {
   position: absolute;
@@ -45,7 +44,6 @@
   position: absolute;
   left: calc((134 - 110) / 306 * 100vw);
   top: calc((50 - 23) / 306 * 100vw);
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(20 / 306 * 100vw);
   color: var(--color-title);
   z-index: 50;
@@ -144,7 +142,6 @@
 }
 
 .settings-label {
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(11 / 306 * 100vw);
   color: var(--color-panel-text);
   white-space: normal;
@@ -164,7 +161,6 @@
 
 .settings-dropdown-trigger {
   width: 100%;
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(10 / 306 * 100vw);
   background: var(--color-primary);
   border: calc(1 / 306 * 100vw) solid var(--color-panel-text);
@@ -208,7 +204,6 @@
 }
 
 .settings-dropdown-item {
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(10 / 306 * 100vw);
   background: none;
   border: none;
@@ -225,7 +220,6 @@
 }
 
 .settings-theme-btn {
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(10 / 306 * 100vw);
   background: none;
   border: calc(1 / 306 * 100vw) solid var(--color-panel-text);
@@ -241,7 +235,6 @@
 }
 
 .settings-input {
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(10 / 306 * 100vw);
   background: rgba(0, 0, 0, 0.3);
   border: calc(1 / 306 * 100vw) solid var(--color-panel-text);
@@ -269,7 +262,6 @@
   height: calc(22 / 306 * 100vw);
   flex-shrink: 0;
   box-sizing: border-box;
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(12 / 306 * 100vw);
   line-height: 1;
   background: rgba(255, 255, 255, 0.05);
@@ -296,7 +288,6 @@
 }
 
 .settings-error {
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(9 / 306 * 100vw);
   color: #ff6b6b;
 }
@@ -418,16 +409,23 @@
   pointer-events: none;
 }
 
-.record-player {
+.record-player, .record-player-top {
   position: absolute;
-  width: calc(200 / 306 * 100vw);
+  /* width: calc(200 / 306 * 100vw); */
+  width: 140vw;
   left: 50%;
-  top: calc(120 / 306 * 100vw);
+  /* top: calc(120 / 306 * 100vw); */
+  bottom: 7%;
   transform: translateX(-50%);
   image-rendering: pixelated;
   pointer-events: none;
   user-select: none;
   z-index: 10;
+}
+
+.record-player-top {
+  opacity: 0.4;
+  z-index: 30;
 }
 
 .frame-overlay {
@@ -457,8 +455,13 @@
 }
 
 .album-frame-layer {
-  left: calc(-35.95vw - 1 / 306 * 100vw);
-  top: calc(-23 / 306 * 100vw);
+  /* left: calc(-35.95vw - 1 / 306 * 100vw);
+  top: calc(-23 / 306 * 100vw); */
+ /*  width: 140vw; */
+ position: absolute;
+  left: 50%;
+  bottom: 7%;
+  transform: translateX(-50%);
   z-index: 45;
 }
 
@@ -487,14 +490,14 @@
 }
 
 .now-playing-label {
-  font-family: 'Rainyhearts', monospace;
-  font-size: calc(12 / 306 * 100vw);
+  font-family: var(--gothic-font);
+  font-size: calc(10 / 306 * 100vw);
   color: var(--color-secondary);
 }
 
 .track-title {
-  font-family: 'Rainyhearts', monospace;
-  font-size: calc(24 / 306 * 100vw);
+  font-family: var(--gothic-font);
+  font-size: calc(20 / 306 * 100vw);
   color: var(--color-primary);
   white-space: nowrap;
   overflow: hidden;
@@ -523,8 +526,8 @@
 }
 
 .track-artist {
-  font-family: 'Rainyhearts', monospace;
-  font-size: calc(14 / 306 * 100vw);
+  font-family: var(--gothic-font);
+  font-size: calc(10 / 306 * 100vw);
   color: var(--color-secondary);
   white-space: nowrap;
   overflow: hidden;
@@ -535,14 +538,14 @@
 /* Time display — elapsed left, remaining right */
 .time-display {
   position: absolute;
-  left: calc((136 - 110) / 306 * 100vw);
+  left: calc((150 - 110) / 306 * 100vw);
   top: calc((479 - 23) / 306 * 100vw);
-  width: calc((382 - 136) / 306 * 100vw);
+  width: calc((362 - 136) / 306 * 100vw);
   display: flex;
   justify-content: space-between;
   z-index: 50;
   pointer-events: none;
-  font-family: 'Rainyhearts', monospace;
+  font-family: var(--gothic-font);
   font-size: calc(12 / 306 * 100vw);
   color: var(--color-primary);
 }
@@ -616,14 +619,12 @@
 }
 
 .spotify-label {
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(11 / 306 * 100vw);
   color: #8a6a7a;
   white-space: nowrap;
 }
 
 .spotify-input {
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(10 / 306 * 100vw);
   background: #1a0e1a;
   border: calc(1 / 306 * 100vw) solid #5a3a4a;
@@ -645,7 +646,6 @@
 }
 
 .spotify-btn {
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(10 / 306 * 100vw);
   background: #5a3a4a;
   border: none;
@@ -674,7 +674,6 @@
 }
 
 .spotify-error {
-  font-family: 'Rainyhearts', monospace;
   font-size: calc(9 / 306 * 100vw);
   color: #c44;
   word-break: break-word;
