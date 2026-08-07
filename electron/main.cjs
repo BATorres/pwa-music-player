@@ -418,7 +418,7 @@ function createWindow() {
     transparent: true,
     backgroundColor: '#00000000',
     hasShadow: false,
-    icon: path.join(__dirname, '..', 'assets', 'pink', 'favicon.png'),
+    icon: path.join(__dirname, '..', 'assets', 'dark', 'favicon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
@@ -758,7 +758,7 @@ ipcMain.handle('youtube-oauth-cancel', () => {
 
 app.whenReady().then(() => {
   if (process.platform === 'darwin' && app.dock) {
-    app.dock.setIcon(path.join(__dirname, '..', 'assets', 'pink', 'favicon.png'));
+    app.dock.setIcon(path.join(__dirname, '..', 'assets', 'dark', 'favicon.png'));
   }
 
   seedUserAudioDirIfMissing().catch((err) => console.warn('[seed]', err.message));

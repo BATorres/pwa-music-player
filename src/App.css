@@ -44,7 +44,7 @@
   position: absolute;
   left: calc((134 - 110) / 306 * 100vw);
   top: calc((50 - 23) / 306 * 100vw);
-  font-size: calc(20 / 306 * 100vw);
+  font-size: calc(18 / 306 * 100vw);
   color: var(--color-title);
   z-index: 50;
   pointer-events: none;
@@ -400,7 +400,7 @@
 /* Now playing section — album art + text */
 .now-playing {
   position: absolute;
-  left: calc((195 - 110) / 306 * 100vw);
+  left: calc((145 - 110) / 306 * 100vw);
   top: calc((355 - 23) / 306 * 100vw);
   display: flex;
   flex-direction: column;
@@ -467,13 +467,13 @@
 
 .album-mask {
   position: absolute;
-  left: calc((146 - 110) / 306 * 100vw);
-  top: calc((356 - 23) / 306 * 100vw);
-  width: calc(42 / 306 * 100vw);
-  height: calc(42 / 306 * 100vw);
+  left: calc((290 - 110) / 306 * 100vw);
+  top: calc((189 - 23) / 306 * 100vw);
+  width: calc(84 / 306 * 100vw);
+  height: calc(84 / 306 * 100vw);
   clip-path: url(#album-mask);
   overflow: hidden;
-  z-index: 40;
+  z-index: 1;
   pointer-events: none;
 }
 
@@ -501,7 +501,7 @@
   color: var(--color-primary);
   white-space: nowrap;
   overflow: hidden;
-  max-width: calc(170 / 306 * 100vw);
+  max-width: calc(210 / 306 * 100vw);
 }
 
 .marquee-measure {

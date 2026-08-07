@@ -363,7 +363,7 @@ export default function App() {
 
   const [recordFrame, setRecordFrame] = useState(0);
   const [needleFrame, setNeedleFrame] = useState(0);
-  const [isPink, setIsPink] = useState(theme === 'black');
+  const [isPink, setIsPink] = useState(theme === 'dark');
   const [swapping, setSwapping] = useState(false);
   const [needleLifted, setNeedleLifted] = useState(false);
   const [starHovered, setStarHovered] = useState(false);
@@ -471,7 +471,7 @@ export default function App() {
   const resizeBR = useResize('bottom-right');
 
   return (
-    <div className={`player ${theme === 'black' ? 'theme-black' : ''}`}>
+    <div className={`player ${theme === 'dark' ? 'theme-dark' : ''}`}>
       {/* Base frame */}
       <img src={assets.frame} className="layer" alt="" draggable={false} />
 
@@ -507,9 +507,6 @@ export default function App() {
 
       {/* Decorative */}
       {/* <img src={assets.plant} className="layer layer-ui" alt="" draggable={false} /> */}
-
-      {/* Decorative */}
-      {/* <img src={assets.recordPlayerTop} className="layer layer-ui" alt="" draggable={false} /> */}
 
       {/* Progress bar layers */}
       <img src={assets.progressBar} className="layer layer-ui" alt="" draggable={false} />
@@ -561,7 +558,7 @@ export default function App() {
       <img src={assets.exitButton} className="layer layer-ui" alt="" draggable={false} />
 
       {/* Settings button layer */}
-      {/* <img src={assets.settings} className="layer layer-ui settings-layer" alt="" draggable={false} /> */}
+      <img src={assets.settings} className="layer layer-ui settings-layer" alt="" draggable={false} />
 
       {/* SVG clip-path for pixel-art album mask */}
       <svg width="0" height="0" style={{ position: 'absolute' }}>
@@ -707,22 +704,16 @@ export default function App() {
             <div className="settings-label">theme</div>
             <div className="settings-theme-row">
               <button
-                className={`settings-theme-btn ${theme === 'pink' ? 'active' : ''}`}
-                onClick={() => { if (theme !== 'pink') toggleTheme(); }}
+                className={`settings-theme-btn ${theme === 'dark' ? 'active' : ''}`}
+                onClick={() => { if (theme !== 'dark') toggleTheme(); }}
               >
-                pink
+                dark
               </button>
               <button
-                className={`settings-theme-btn ${theme === 'blue' ? 'active' : ''}`}
-                onClick={() => { if (theme !== 'blue') toggleTheme(); }}
+                  className={`settings-theme-btn ${theme === 'light' ? 'active' : ''}`}
+                onClick={() => { if (theme !== 'light') toggleTheme(); }}
               >
-                blue
-              </button>
-              <button
-                className={`settings-theme-btn ${theme === 'black' ? 'active' : ''}`}
-                onClick={() => { if (theme !== 'black') toggleTheme(); }}
-              >
-                black
+                light
               </button>
             </div>
             <div className="settings-label">Wanna listen something else?</div>

@@ -1,115 +1,42 @@
 import { useState, useCallback, useMemo } from 'react';
 
-// ── Pink theme assets ────────────────────────────────────
-import pinkFrame from '../assets/pink/frame.png';
-import pinkFrameNoBg from '../assets/pink/frame_no_background.png';
-import pinkPlant from '../assets/pink/plant.png';
-import pinkRecordPlayer from '../assets/pink/record_player.png';
-import pinkAlbumFrame from '../assets/pink/album_frame.png';
-import pinkBackwardsButton from '../assets/pink/backwards_button.png';
-import pinkPauseButton from '../assets/pink/pause_button.png';
-import pinkPlayButton from '../assets/pink/play_button.png';
-import pinkForwardsButton from '../assets/pink/forwards_button.png';
-import pinkExitButton from '../assets/pink/exit_button.png';
-import pinkMinimizerButton from '../assets/pink/minimizer_button.png';
-import pinkWindowButton from '../assets/pink/window_button.png';
-import pinkFavicon from '../assets/pink/favicon.png';
-import pinkProgressBar from '../assets/pink/progress_bar.png';
-import pinkSettings from '../assets/pink/settings.png';
-import pinkVolumeButton from '../assets/pink/volume_button.png';
-import pinkMuteButton from '../assets/pink/mute_button.png';
-import pinkShuffleButton from '../assets/pink/shuffle_button.png';
-import pinkRepeatButton from '../assets/pink/repeat_button.png';
-import pinkVolumeBarHigh from '../assets/pink/volume_bar_high.png';
-import pinkVolumeBarLow from '../assets/pink/volume_bar_low.png';
+// Dark theme assets
+import darkFrame from '../assets/dark/frame.png';
+import darkFrameNoBg from '../assets/dark/frame_no_background.png';
+import darkRecordPlayer from '../assets/dark/record_player.png';
+import darkRecordPlayerTop from '../assets/dark/record_player_top.png';
+import darkFavicon from '../assets/dark/favicon.png';
+import darkProgressBar from '../assets/dark/progress_bar.png';
+import darkVolumeBarHigh from '../assets/dark/volume_bar_high.png';
+import darkVolumeBarLow from '../assets/dark/volume_bar_low.png';
 
-// ── Shared record animations ────────────────────────────
-import recordA1 from '../assets/animations/record-pink/frame-1.png';
-import recordA2 from '../assets/animations/record-pink/frame-2.png';
-import recordA3 from '../assets/animations/record-pink/frame-3.png';
-import recordA4 from '../assets/animations/record-pink/frame-4.png';
-import recordB1 from '../assets/animations/record-blue/frame-1.png';
-import recordB2 from '../assets/animations/record-blue/frame-2.png';
-import recordB3 from '../assets/animations/record-blue/frame-3.png';
-import recordB4 from '../assets/animations/record-blue/frame-4.png';
+// Dark theme animations
+import darkNeedlePlay1 from '../assets/animations/dark/needle-playing/frame-1.png';
+import darkNeedlePlay2 from '../assets/animations/dark/needle-playing/frame-2.png';
+import darkNeedlePlay3 from '../assets/animations/dark/needle-playing/frame-3.png';
+import darkNeedleChange1 from '../assets/animations/dark/needle-change/frame-1.png';
+import darkNeedleChange2 from '../assets/animations/dark/needle-change/frame-2.png';
+import darkNeedleChange3 from '../assets/animations/dark/needle-change/frame-3.png';
 
-// ── Pink needle animations ──────────────────────────────
-import pinkNeedlePlay1 from '../assets/animations/pink/needle-playing/frame-1.png';
-import pinkNeedlePlay2 from '../assets/animations/pink/needle-playing/frame-2.png';
-import pinkNeedlePlay3 from '../assets/animations/pink/needle-playing/frame-3.png';
-import pinkNeedleChange1 from '../assets/animations/pink/needle-change/frame-1.png';
-import pinkNeedleChange2 from '../assets/animations/pink/needle-change/frame-2.png';
-import pinkNeedleChange3 from '../assets/animations/pink/needle-change/frame-3.png';
+// Light theme assets
+import lightFrame from '../assets/light/frame.png';
+import lightFrameNoBg from '../assets/light/frame_no_background.png';
+import lightRecordPlayer from '../assets/light/record_player.png';
+import lightRecordPlayerTop from '../assets/light/record_player_top.png';
+import lightFavicon from '../assets/light/favicon.png';
+import lightProgressBar from '../assets/light/progress_bar.png';
+import lightVolumeBarHigh from '../assets/light/volume_bar_high.png';
+import lightVolumeBarLow from '../assets/light/volume_bar_low.png';
 
-// ── Blue needle animations ──────────────────────────────
-import blueNeedlePlay1 from '../assets/animations/blue/needle-playing/frame-1.png';
-import blueNeedlePlay2 from '../assets/animations/blue/needle-playing/frame-2.png';
-import blueNeedlePlay3 from '../assets/animations/blue/needle-playing/frame-3.png';
-import blueNeedleChange1 from '../assets/animations/blue/needle-change/frame-1.png';
-import blueNeedleChange2 from '../assets/animations/blue/needle-change/frame-2.png';
-import blueNeedleChange3 from '../assets/animations/blue/needle-change/frame-3.png';
+// Light theme animations
+import lightNeedlePlay1 from '../assets/animations/light/needle-playing/frame-1.png';
+import lightNeedlePlay2 from '../assets/animations/light/needle-playing/frame-2.png';
+import lightNeedlePlay3 from '../assets/animations/light/needle-playing/frame-3.png';
+import lightNeedleChange1 from '../assets/animations/light/needle-change/frame-1.png';
+import lightNeedleChange2 from '../assets/animations/light/needle-change/frame-2.png';
+import lightNeedleChange3 from '../assets/animations/light/needle-change/frame-3.png';
 
-const SHARED_RECORD_FRAMES = {
-  recordFramesA: [recordA1, recordA2, recordA3, recordA4],
-  recordFramesB: [recordB1, recordB2, recordB3, recordB4],
-};
-
-// ── Blue theme assets ────────────────────────────────────
-import blueFrame from '../assets/blue/frame.png';
-import blueFrameNoBg from '../assets/blue/frame_no_background.png';
-import bluePlant from '../assets/blue/plant.png';
-import blueRecordPlayer from '../assets/blue/record_player.png';
-import blueAlbumFrame from '../assets/blue/album_frame.png';
-import blueBackwardsButton from '../assets/blue/backwards_button.png';
-import bluePauseButton from '../assets/blue/pause_button.png';
-import bluePlayButton from '../assets/blue/play_button.png';
-import blueForwardsButton from '../assets/blue/forwards_button.png';
-import blueExitButton from '../assets/blue/exit_button.png';
-import blueMinimizerButton from '../assets/blue/minimizer_button.png';
-import blueWindowButton from '../assets/blue/window_button.png';
-import blueFavicon from '../assets/blue/favicon.png';
-import blueProgressBar from '../assets/blue/progress_bar.png';
-import blueSettings from '../assets/blue/settings.png';
-import blueVolumeButton from '../assets/blue/volume_button.png';
-import blueMuteButton from '../assets/blue/mute_button.png';
-import blueShuffleButton from '../assets/blue/shuffle_button.png';
-import blueRepeatButton from '../assets/blue/repeat_button.png';
-import blueVolumeBarHigh from '../assets/blue/volume_bar_high.png';
-import blueVolumeBarLow from '../assets/blue/volume_bar_low.png';
-
-// Black theme
-import blackFrame from '../assets/black/frame.png';
-import blackFrameNoBg from '../assets/black/frame_no_background.png';
-import blackRecordPlayer from '../assets/black/record_player.png';
-import blackRecordPlayerTop from '../assets/black/record_player_top.png';
-//import blueAlbumFrame from '../assets/blue/album_frame.png';
-/* import blueBackwardsButton from '../assets/blue/backwards_button.png';
-import bluePauseButton from '../assets/blue/pause_button.png';
-import bluePlayButton from '../assets/blue/play_button.png';
-import blueForwardsButton from '../assets/blue/forwards_button.png';
-import blueExitButton from '../assets/blue/exit_button.png';
-import blueMinimizerButton from '../assets/blue/minimizer_button.png';
-import blueWindowButton from '../assets/blue/window_button.png';
- */
-import blackFavicon from '../assets/black/favicon.png';
-import blackProgressBar from '../assets/black/progress_bar.png';
-/* import blueSettings from '../assets/blue/settings.png';
-import blueVolumeButton from '../assets/blue/volume_button.png';
-import blueMuteButton from '../assets/blue/mute_button.png';
-import blueShuffleButton from '../assets/blue/shuffle_button.png';
-import blueRepeatButton from '../assets/blue/repeat_button.png'; */
-import blackVolumeBarHigh from '../assets/black/volume_bar_high.png';
-import blackVolumeBarLow from '../assets/black/volume_bar_low.png';
-
-//Animations
-import blackNeedlePlay1 from '../assets/animations/black/needle-playing/frame-1.png';
-import blackNeedlePlay2 from '../assets/animations/black/needle-playing/frame-2.png';
-import blackNeedlePlay3 from '../assets/animations/black/needle-playing/frame-3.png';
-import blackNeedleChange1 from '../assets/animations/black/needle-change/frame-1.png';
-import blackNeedleChange2 from '../assets/animations/black/needle-change/frame-2.png';
-import blackNeedleChange3 from '../assets/animations/black/needle-change/frame-3.png';
-
-// Commons
+// Common assets
 import backwardsButton from '../assets/commons/backwards_button.png';
 import exitButton from '../assets/commons/exit_button.png';
 import forwardsButton from '../assets/commons/forwards_button.png';
@@ -123,27 +50,27 @@ import shuffleButton from '../assets/commons/shuffle_button.png';
 import volumeButton from '../assets/commons/volume_button.png';
 import windowButton from '../assets/commons/window_button.png';
 
-//Records frames
-import recordBlack1 from '../assets/animations/record-black/frame-1.png';
-import recordBlack2 from '../assets/animations/record-black/frame-2.png';
-import recordBlack3 from '../assets/animations/record-black/frame-3.png';
-import recordBlack4 from '../assets/animations/record-black/frame-4.png';
+// Records frames
+import recordDark1 from '../assets/animations/record-dark/frame-1.png';
+import recordDark2 from '../assets/animations/record-dark/frame-2.png';
+import recordDark3 from '../assets/animations/record-dark/frame-3.png';
+import recordDark4 from '../assets/animations/record-dark/frame-4.png';
 import recordLight1 from '../assets/animations/record-light/frame-1.png';
 import recordLight2 from '../assets/animations/record-light/frame-2.png';
 import recordLight3 from '../assets/animations/record-light/frame-3.png';
 import recordLight4 from '../assets/animations/record-light/frame-4.png';
 
 const RECORD_FRAMES = {
-  recordFramesA: [recordBlack1, recordBlack2, recordBlack3, recordBlack4],
+  recordFramesA: [recordDark1, recordDark2, recordDark3, recordDark4],
   recordFramesB: [recordLight1, recordLight2, recordLight3, recordLight4],
 };
 
 const THEME_ASSETS = {
-  black: {
-    frame: blackFrame,
-    frameNoBg: blackFrameNoBg,
-    recordPlayer: blackRecordPlayer,
-    recordPlayerTop: blackRecordPlayerTop,
+  dark: {
+    frame: darkFrame,
+    frameNoBg: darkFrameNoBg,
+    recordPlayer: darkRecordPlayer,
+    recordPlayerTop: darkRecordPlayerTop,
     backwardsButton: backwardsButton,
     pauseButton: pauseButton,
     playButton: playButton,
@@ -151,71 +78,44 @@ const THEME_ASSETS = {
     exitButton: exitButton,
     minimizerButton: minimizerButton,
     windowButton: windowButton,
-    favicon: blackFavicon,
-    progressBar: blackProgressBar,
+    favicon: darkFavicon,
+    progressBar: darkProgressBar,
     settings: settings,
     volumeButton: volumeButton,
     muteButton: muteButton,
     shuffleButton: shuffleButton,
     repeatButton: repeatButton,
-    volumeBarHigh: blackVolumeBarHigh,
-    volumeBarLow: blackVolumeBarLow,
+    volumeBarHigh: darkVolumeBarHigh,
+    volumeBarLow: darkVolumeBarLow,
     ...RECORD_FRAMES,
-    needlePlayFrames: [blackNeedlePlay1, blackNeedlePlay2, blackNeedlePlay3],
-    needleChangeFrames: [blackNeedleChange1, blackNeedleChange2, blackNeedleChange3],
+    needlePlayFrames: [darkNeedlePlay1, darkNeedlePlay2, darkNeedlePlay3],
+    needleChangeFrames: [darkNeedleChange1, darkNeedleChange2, darkNeedleChange3],
   },
-  pink: {
-    frame: pinkFrame,
-    frameNoBg: pinkFrameNoBg,
-    plant: pinkPlant,
-    recordPlayer: pinkRecordPlayer,
-    albumFrame: pinkAlbumFrame,
-    backwardsButton: pinkBackwardsButton,
-    pauseButton: pinkPauseButton,
-    playButton: pinkPlayButton,
-    forwardsButton: pinkForwardsButton,
-    exitButton: pinkExitButton,
-    minimizerButton: pinkMinimizerButton,
-    windowButton: pinkWindowButton,
-    favicon: pinkFavicon,
-    progressBar: pinkProgressBar,
-    settings: pinkSettings,
-    volumeButton: pinkVolumeButton,
-    muteButton: pinkMuteButton,
-    shuffleButton: pinkShuffleButton,
-    repeatButton: pinkRepeatButton,
-    volumeBarHigh: pinkVolumeBarHigh,
-    volumeBarLow: pinkVolumeBarLow,
-    ...SHARED_RECORD_FRAMES,
-    needlePlayFrames: [pinkNeedlePlay1, pinkNeedlePlay2, pinkNeedlePlay3],
-    needleChangeFrames: [pinkNeedleChange1, pinkNeedleChange2, pinkNeedleChange3],
-  },
-  blue: {
-    frame: blueFrame,
-    frameNoBg: blueFrameNoBg,
-    plant: bluePlant,
-    recordPlayer: blueRecordPlayer,
-    albumFrame: blueAlbumFrame,
-    backwardsButton: blueBackwardsButton,
-    pauseButton: bluePauseButton,
-    playButton: bluePlayButton,
-    forwardsButton: blueForwardsButton,
-    exitButton: blueExitButton,
-    minimizerButton: blueMinimizerButton,
-    windowButton: blueWindowButton,
-    favicon: blueFavicon,
-    progressBar: blueProgressBar,
-    settings: blueSettings,
-    volumeButton: blueVolumeButton,
-    muteButton: blueMuteButton,
-    shuffleButton: blueShuffleButton,
-    repeatButton: blueRepeatButton,
-    volumeBarHigh: blueVolumeBarHigh,
-    volumeBarLow: blueVolumeBarLow,
-    ...SHARED_RECORD_FRAMES,
-    needlePlayFrames: [blueNeedlePlay1, blueNeedlePlay2, blueNeedlePlay3],
-    needleChangeFrames: [blueNeedleChange1, blueNeedleChange2, blueNeedleChange3],
-  },
+  light: {
+    frame: lightFrame,
+    frameNoBg: lightFrameNoBg,
+    recordPlayer: lightRecordPlayer,
+    recordPlayerTop: lightRecordPlayerTop,
+    backwardsButton: backwardsButton,
+    pauseButton: pauseButton,
+    playButton: playButton,
+    forwardsButton: forwardsButton,
+    exitButton: exitButton,
+    minimizerButton: minimizerButton,
+    windowButton: windowButton,
+    favicon: lightFavicon,
+    progressBar: lightProgressBar,
+    settings: settings,
+    volumeButton: volumeButton,
+    muteButton: muteButton,
+    shuffleButton: shuffleButton,
+    repeatButton: repeatButton,
+    volumeBarHigh: lightVolumeBarHigh,
+    volumeBarLow: lightVolumeBarLow,
+    ...RECORD_FRAMES,
+    needlePlayFrames: [lightNeedlePlay1, lightNeedlePlay2, lightNeedlePlay3],
+    needleChangeFrames: [lightNeedleChange1, lightNeedleChange2, lightNeedleChange3],
+  }
 };
 
 const STORAGE_KEY = 'cupid-player-theme';
@@ -223,11 +123,11 @@ const STORAGE_KEY = 'cupid-player-theme';
 function getStoredTheme() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'pink' || stored === 'blue' || stored === 'black') return stored;
+    if (stored === 'dark' || stored === 'light') return stored;
   } catch {
     // localStorage unavailable
   }
-  return 'black'; // default theme
+  return 'dark'; // default theme
 }
 
 /**
@@ -239,7 +139,7 @@ export default function useTheme() {
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => {
-      const next = prev === 'pink' ? 'blue' : (prev === 'blue' ? 'black' : 'pink');
+      const next = prev === 'light' ? 'dark' : 'light';
       try {
         localStorage.setItem(STORAGE_KEY, next);
       } catch {

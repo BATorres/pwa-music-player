@@ -1,6 +1,6 @@
 {
-  "name": "cupid-player",
-  "version": "0.0.0",
+  "name": "awesome-mix-player",
+  "version": "0.1.0",
   "private": true,
   "description": "A desktop media player",
   "main": "electron/main.cjs",
@@ -39,7 +39,7 @@
   },
   "build": {
     "appId": "com.codedbycupidity.cupid-player",
-    "productName": "Cupid Player",
+    "productName": "Awesome Mix Player",
     "files": [
       "dist/**/*",
       "electron/**/*",
@@ -71,7 +71,7 @@
     },
     "win": {
       "target": "nsis",
-      "icon": "assets/pink/icon.png"
+      "icon": "assets/dark/icon.png"
     },
     "linux": {
       "target": "AppImage",
