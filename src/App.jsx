@@ -1,26 +1,26 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import './App.css';
-import useAudioPlayer from './useAudioPlayer';
-import useSpotifyPlayer from './useSpotifyPlayer';
-import useTheme from './useTheme';
-import { login as spotifyLogin, handleCallback, isLoggedIn as isSpotifyLoggedIn, logout as spotifyLogout } from './spotify/auth.js';
-import { fetchPlaylistTracks as fetchSpotifyTracks, fetchMyPlaylists as fetchSpotifyPlaylists } from './spotify/api.js';
-import { login as appleLogin, logout as appleLogout, isLoggedIn as isAppleLoggedIn, initMusicKit } from './apple/auth.js';
-import { fetchMyPlaylists as fetchApplePlaylists, fetchPlaylistTracks as fetchAppleTracks } from './apple/api.js';
+import useAudioPlayer from './hooks/useAudioPlayer.js';
+import useSpotifyPlayer from './hooks/useSpotifyPlayer.js';
+import useTheme from './hooks/useTheme.js';
+import { login as spotifyLogin, handleCallback, isLoggedIn as isSpotifyLoggedIn, logout as spotifyLogout } from './integrations/spotify/auth.js';
+import { fetchPlaylistTracks as fetchSpotifyTracks, fetchMyPlaylists as fetchSpotifyPlaylists } from './integrations/spotify/api.js';
+import { login as appleLogin, logout as appleLogout, isLoggedIn as isAppleLoggedIn, initMusicKit } from './integrations/apple/auth.js';
+import { fetchMyPlaylists as fetchApplePlaylists, fetchPlaylistTracks as fetchAppleTracks } from './integrations/apple/api.js';
 import {
   login as youtubeLogin,
   logout as youtubeLogout,
   isLoggedIn as isYouTubeLoggedIn,
   isConfigured as isYouTubeConfigured,
   cancelLogin as cancelYouTubeLogin,
-} from './youtube/auth.js';
+} from './integrations/youtube/auth.js';
 import {
   parsePlaylistUrl as parseYouTubePlaylistUrl,
   fetchPlaylistByUrl as fetchYouTubePlaylistByUrl,
   fetchMyPlaylists as fetchYouTubePlaylists,
   fetchPlaylistTracks as fetchYouTubeTracks,
-} from './youtube/api.js';
+} from './integrations/youtube/api.js';
 
 import progressBarStars from '../assets/progress_bar_stars.png';
 import star from '../assets/star.png';
