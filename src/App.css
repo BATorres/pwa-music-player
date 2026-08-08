@@ -5,17 +5,13 @@
   overflow: hidden;
   border-radius: calc(5 / 306 * 100vw); /* match frame's pixel-art rounded corners */
   clip-path: inset(0 0 0 calc(3 / 306 * 100vw));
-  /* --color-title: #78364F; */
-  /* --color-primary: #5a3a4a;
-  --color-secondary: #8a6a7a;
-  --color-panel-text: #F6CFC8; */
+  --color-primary: #0b0a12;
+  --color-secondary: #5a3d8e;
+  --color-panel-text: var(--font-color);
 }
 
-.player.theme-blue {
-  --color-title: #063940;
-  --color-primary: #063940;
-  --color-secondary: #1a6b6b;
-  --color-panel-text: #C8D3F6;
+.player.theme-light {
+  --color-primary: #996ded;
 }
 
 .layer {
@@ -45,7 +41,7 @@
   left: calc((134 - 110) / 306 * 100vw);
   top: calc((50 - 23) / 306 * 100vw);
   font-size: calc(18 / 306 * 100vw);
-  color: var(--color-title);
+  color: var(--font-color);
   z-index: 50;
   pointer-events: none;
   user-select: none;
@@ -143,7 +139,7 @@
 
 .settings-label {
   font-size: calc(11 / 306 * 100vw);
-  color: var(--color-panel-text);
+  color: var(--font-color);
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -176,7 +172,7 @@
 }
 
 .settings-dropdown-trigger:hover {
-  background: var(--color-panel-text);
+  background: var(--font-color);
   color: var(--color-primary);
 }
 
@@ -424,7 +420,7 @@
 }
 
 .record-player-top {
-  opacity: 0.4;
+  opacity: 0.6;
   z-index: 30;
 }
 
@@ -455,9 +451,6 @@
 }
 
 .album-frame-layer {
-  /* left: calc(-35.95vw - 1 / 306 * 100vw);
-  top: calc(-23 / 306 * 100vw); */
- /*  width: 140vw; */
  position: absolute;
   left: 50%;
   bottom: 7%;
@@ -467,14 +460,16 @@
 
 .album-mask {
   position: absolute;
-  left: calc((290 - 110) / 306 * 100vw);
-  top: calc((189 - 23) / 306 * 100vw);
-  width: calc(84 / 306 * 100vw);
-  height: calc(84 / 306 * 100vw);
+  left: calc((280 - 110) / 306 * 100vw);
+  top: calc((190 - 23) / 306 * 100vw);
+  width: calc(72 / 306 * 100vw);
+  height: calc(72 / 306 * 100vw);
   clip-path: url(#album-mask);
   overflow: hidden;
   z-index: 1;
   pointer-events: none;
+  border: 2px solid var(--font-color);
+  border-radius: 5%;
 }
 
 .album-art {
@@ -492,13 +487,13 @@
 .now-playing-label {
   font-family: var(--gothic-font);
   font-size: calc(10 / 306 * 100vw);
-  color: var(--color-secondary);
+  color: var(--font-color);
 }
 
 .track-title {
   font-family: var(--gothic-font);
   font-size: calc(20 / 306 * 100vw);
-  color: var(--color-primary);
+  color: var(--font-color);
   white-space: nowrap;
   overflow: hidden;
   max-width: calc(210 / 306 * 100vw);
@@ -528,7 +523,7 @@
 .track-artist {
   font-family: var(--gothic-font);
   font-size: calc(10 / 306 * 100vw);
-  color: var(--color-secondary);
+  color: var(--font-color);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

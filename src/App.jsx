@@ -471,14 +471,14 @@ export default function App() {
   const resizeBR = useResize('bottom-right');
 
   return (
-    <div className={`player ${theme === 'dark' ? 'theme-dark' : ''}`}>
+    <div className={`player ${theme === 'dark' ? 'theme-dark' : 'theme-light'}`}>
       {/* Base frame */}
       <img src={assets.frame} className="layer" alt="" draggable={false} />
 
       {/* Window title */}
       <div className="window-title">Karlita's Awesome Mix</div>
 
-      {/* Record player centered in frame */}
+      {/* Record player adjusted in frame */}
       <img src={assets.recordPlayerTop} className="record-player-top" alt="" draggable={false} />
       <img src={assets.recordPlayer} className="record-player" alt="" draggable={false} />
       <img
@@ -565,13 +565,13 @@ export default function App() {
         <defs>
           <clipPath id="album-mask" clipPathUnits="objectBoundingBox">
             {/* 35x41 centered vertically */}
-            <rect x="0.07317" y="0" width="0.85366" height="1" />
+            <rect x="0" y="0" width="1" height="1" />
             {/* 37x39 */}
-            <rect x="0.04878" y="0.02439" width="0.90244" height="0.95122" />
+            <rect x="0.04878" y="0.02439" width="1" height="1" />
             {/* 39x37 */}
-            <rect x="0.02439" y="0.04878" width="0.95122" height="0.90244" />
+            <rect x="0.02439" y="0.04878" width="1" height="1" />
             {/* 41x35 */}
-            <rect x="0" y="0.07317" width="1" height="0.85366" />
+            <rect x="0" y="0.07317" width="1" height="1" />
           </clipPath>
         </defs>
       </svg>
