@@ -177,6 +177,11 @@ export default function useSpotifyPlayer(tracks, playMode = 'normal') {
     }
   }, [isPlaying]);
 
+  const pause = useCallback(() => {
+    audio.pause();
+    setIsPlaying(false);
+  }, []);
+
   const next = useCallback(() => {
     setTrackIndex((prev) => {
       // Prefer the precomputed next (matches what prefetch warmed)
@@ -231,6 +236,7 @@ export default function useSpotifyPlayer(tracks, playMode = 'normal') {
     duration,
     currentTime,
     togglePlay,
+    pause,
     next,
     prev,
     seek,

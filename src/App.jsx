@@ -29,6 +29,7 @@ import starSelected from '../assets/star_selected.png';
 import progressBarThorns from '../assets/progress_bar_thorns.png';
 import ghost from '../assets/ghost.png';
 import ghostSelected from '../assets/ghost_selected.png';
+import PlaylistList from './components/Player/PlaylistList.jsx';
 import SettingsDropdown from './components/Player/SettingsDropdown.jsx';
 
 function useResize(corner) {
@@ -62,29 +63,6 @@ function formatTime(seconds) {
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   return `${m}:${s.toString().padStart(2, '0')}`;
-}
-
-function PlaylistList({ loading, playlists, loadingPlaylist, onSelect, emptyMessage = 'no playlists found' }) {
-  return (
-    <div className="settings-playlist-list">
-      {loading ? (
-        <div className="settings-label">loading...</div>
-      ) : playlists.length === 0 ? (
-        <div className="settings-label">{emptyMessage}</div>
-      ) : (
-        playlists.map((p) => (
-          <button
-            key={p.id}
-            className={`settings-playlist-item ${loadingPlaylist ? 'disabled' : ''}`}
-            onClick={() => onSelect(p.id)}
-            disabled={loadingPlaylist}
-          >
-            {p.name}
-          </button>
-        ))
-      )}
-    </div>
-  );
 }
 
 function MarqueeText({ className, text }) {
@@ -156,6 +134,15 @@ export default function App() {
 
   const local = useAudioPlayer(localTracks, playMode, window.cupid?.getLocalAudioPath);
   const streaming = useSpotifyPlayer(streamTracks, playMode);
+
+  useEffect(() => {
+    if (source === 'streaming') {
+      local.pause();
+    } else {
+      streaming.pause();
+    }
+  }, [source, local.pause, streaming.pause]);
+
   const player = source === 'streaming' ? streaming : local;
 
   const {

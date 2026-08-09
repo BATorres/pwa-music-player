@@ -1,0 +1,42 @@
+.settings-playlist-list {
+  max-height: calc(70 / 306 * 100vw);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: calc(2 / 306 * 100vw);
+  scrollbar-width: none;
+}
+
+.settings-playlist-list::-webkit-scrollbar {
+  display: none;
+}
+
+.settings-playlist-item {
+  width: 100%;
+  height: calc(22 / 306 * 100vw);
+  flex-shrink: 0;
+  box-sizing: border-box;
+  font-size: calc(12 / 306 * 100vw);
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-radius: calc(2 / 306 * 100vw);
+  color: var(--color-panel-text);
+  padding: 0 calc(6 / 306 * 100vw);
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.settings-playlist-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.settings-playlist-item.disabled {
+  opacity: 0.5;
+  cursor: default;
+}
