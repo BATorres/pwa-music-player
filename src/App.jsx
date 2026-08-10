@@ -1,5 +1,4 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
 import './App.css';
 import useAudioPlayer from './hooks/useAudioPlayer.js';
 import useSpotifyPlayer from './hooks/useSpotifyPlayer.js';
@@ -29,8 +28,8 @@ import starSelected from '../assets/star_selected.png';
 import progressBarThorns from '../assets/progress_bar_thorns.png';
 import ghost from '../assets/ghost.png';
 import ghostSelected from '../assets/ghost_selected.png';
-import PlaylistList from './components/Player/PlaylistList.jsx';
-import SettingsDropdown from './components/Player/SettingsDropdown.jsx';
+import PlaylistList from './components/Settings/PlaylistList/PlaylistList.jsx';
+import SettingsDropdown from './components/Settings/SettingsDropdown/SettingsDropdown.jsx';
 
 function useResize(corner) {
   const onMouseDown = useCallback((e) => {

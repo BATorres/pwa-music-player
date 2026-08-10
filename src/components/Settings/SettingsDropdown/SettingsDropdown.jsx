@@ -57,7 +57,7 @@ export default function SettingsDropdown({ value, options, onChange }) {
           role="listbox"
           style={{
             position: 'fixed',
-            top: `${menuRect.top + 15}px`,
+            top: `${menuRect.top + 2}px`,
             left: `${menuRect.left}px`,
             width: `${menuRect.width}px`,
           }}
