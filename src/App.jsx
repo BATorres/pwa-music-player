@@ -3,23 +3,6 @@ import './App.css';
 import useAudioPlayer from './hooks/useAudioPlayer.js';
 import useSpotifyPlayer from './hooks/useSpotifyPlayer.js';
 import useTheme from './hooks/useTheme.js';
-import { login as spotifyLogin, handleCallback, isLoggedIn as isSpotifyLoggedIn, logout as spotifyLogout } from './integrations/spotify/auth.js';
-import { fetchPlaylistTracks as fetchSpotifyTracks, fetchMyPlaylists as fetchSpotifyPlaylists } from './integrations/spotify/api.js';
-import { login as appleLogin, logout as appleLogout, isLoggedIn as isAppleLoggedIn, initMusicKit } from './integrations/apple/auth.js';
-import { fetchMyPlaylists as fetchApplePlaylists, fetchPlaylistTracks as fetchAppleTracks } from './integrations/apple/api.js';
-import {
-  login as youtubeLogin,
-  logout as youtubeLogout,
-  isLoggedIn as isYouTubeLoggedIn,
-  isConfigured as isYouTubeConfigured,
-  cancelLogin as cancelYouTubeLogin,
-} from './integrations/youtube/auth.js';
-import {
-  parsePlaylistUrl as parseYouTubePlaylistUrl,
-  fetchPlaylistByUrl as fetchYouTubePlaylistByUrl,
-  fetchMyPlaylists as fetchYouTubePlaylists,
-  fetchPlaylistTracks as fetchYouTubeTracks,
-} from './integrations/youtube/api.js';
 
 import progressBarStars from '../assets/progress_bar_stars.png';
 import star from '../assets/star.png';
@@ -28,8 +11,7 @@ import starSelected from '../assets/star_selected.png';
 import progressBarThorns from '../assets/progress_bar_thorns.png';
 import ghost from '../assets/ghost.png';
 import ghostSelected from '../assets/ghost_selected.png';
-import PlaylistList from './components/Settings/PlaylistList/PlaylistList.jsx';
-import SettingsDropdown from './components/Settings/SettingsDropdown/SettingsDropdown.jsx';
+import SettingsPanel from './components/Settings/SettingsPanel/SettingsPanel.jsx';
 
 function useResize(corner) {
   const onMouseDown = useCallback((e) => {
@@ -91,45 +73,13 @@ function MarqueeText({ className, text }) {
 export default function App() {
   // ── Source state ─────────────────────────────────────────
   const [source, setSource] = useState('local'); // 'local' | 'streaming'
-  const [spotifyConnected, setSpotifyConnected] = useState(isSpotifyLoggedIn());
-  const [appleConnected, setAppleConnected] = useState(isAppleLoggedIn());
-  const [youtubeConnected, setYoutubeConnected] = useState(isYouTubeLoggedIn());
-  const [youtubeLoggingIn, setYoutubeLoggingIn] = useState(false);
-  const [youtubeUrlInput, setYoutubeUrlInput] = useState('');
   const [streamTracks, setStreamTracks] = useState([]);
-  const [spotifyPlaylists, setSpotifyPlaylists] = useState([]);
-  const [applePlaylists, setApplePlaylists] = useState([]);
-  const [youtubePlaylists, setYoutubePlaylists] = useState([]);
-  const [loadingPlaylists, setLoadingPlaylists] = useState(false);
-  const [loadingPlaylist, setLoadingPlaylist] = useState(false);
-  const [settingsError, setSettingsError] = useState(null);
-  const [musicService, setMusicService] = useState(() => {
-    try {
-      const stored = localStorage.getItem('cupid-player-music-service');
-      if (stored === 'spotify' || stored === 'apple' || stored === 'youtube' || stored === 'local') return stored;
-    } catch {
-      // ignore
-    }
-    return 'local';
-  }); // 'spotify' | 'apple' | 'youtube' | 'local'
+  const [localTracks, setLocalTracks] = useState([]);
   const [playMode, setPlayMode] = useState('normal'); // 'normal' | 'shuffle' | 'repeat'
   const [volumeHovered, setVolumeHovered] = useState(false);
   const [volumeDragging, setVolumeDragging] = useState(false);
   const volumeBarRef = useRef(null);
   const [showDebug] = useState(false);
-  const [localTracks, setLocalTracks] = useState([]);
-
-  const loadLocalPlaylist = useCallback(async () => {
-    if (!window.cupid?.getLocalPlaylist) return;
-    try {
-      const tracks = await window.cupid.getLocalPlaylist();
-      setLocalTracks(Array.isArray(tracks) ? tracks : []);
-    } catch (err) {
-      console.error('Failed to load local playlist:', err);
-    }
-  }, []);
-
-  useEffect(() => { loadLocalPlaylist(); }, [loadLocalPlaylist]);
 
   const local = useAudioPlayer(localTracks, playMode, window.cupid?.getLocalAudioPath);
   const streaming = useSpotifyPlayer(streamTracks, playMode);
@@ -164,112 +114,10 @@ export default function App() {
     setPlayMode((m) => m === 'normal' ? 'shuffle' : m === 'shuffle' ? 'repeat' : 'normal');
   }, []);
 
-  // ── Fetch Spotify playlists ────────────────────────────
-  const loadSpotifyPlaylists = useCallback((silent = false) => {
-    setLoadingPlaylists(true);
-    if (!silent) setSettingsError(null);
-    fetchSpotifyPlaylists()
-      .then((p) => { setSpotifyPlaylists(p); setSettingsError(null); })
-      .catch((err) => { if (!silent) setSettingsError(err.message); })
-      .finally(() => setLoadingPlaylists(false));
-  }, []);
-
-  // ── Fetch Apple Music playlists ────────────────────────
-  const loadApplePlaylists = useCallback((silent = false) => {
-    setLoadingPlaylists(true);
-    if (!silent) setSettingsError(null);
-    fetchApplePlaylists()
-      .then((p) => { setApplePlaylists(p); setSettingsError(null); })
-      .catch((err) => { if (!silent) setSettingsError(err.message); })
-      .finally(() => setLoadingPlaylists(false));
-  }, []);
-
-  // ── Fetch YouTube playlists (Data API, requires sign-in) ─
-  const loadYoutubePlaylists = useCallback((silent = false) => {
-    setLoadingPlaylists(true);
-    if (!silent) setSettingsError(null);
-    fetchYouTubePlaylists()
-      .then((p) => { setYoutubePlaylists(p); setSettingsError(null); })
-      .catch((err) => { if (!silent) setSettingsError(err.message); })
-      .finally(() => setLoadingPlaylists(false));
-  }, []);
-
-  // ── Load a playlist from a YouTube URL (no sign-in) ─────
-  const loadYoutubePlaylistFromUrl = useCallback(async (rawInput) => {
-    setSettingsError(null);
-    const parsed = parseYouTubePlaylistUrl(rawInput);
-    if (!parsed) {
-      setSettingsError('Not a recognised YouTube playlist URL');
-      return;
-    }
-    setLoadingPlaylist(true);
-    try {
-      const tracks = await fetchYouTubePlaylistByUrl(rawInput);
-      if (tracks.length === 0) {
-        setSettingsError('Playlist is empty or private');
-        return;
-      }
-      setStreamTracks(tracks);
-      setSource('streaming');
-      setYoutubeUrlInput('');
-    } catch (err) {
-      setSettingsError(err.message);
-    } finally {
-      setLoadingPlaylist(false);
-    }
-  }, []);
-
-  // ── Handle Spotify OAuth callback on mount ─────────────
-  useEffect(() => {
-    async function checkCallback() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has('code')) {
-        try {
-          await handleCallback();
-          setSpotifyConnected(true);
-          // Small delay to let token settle before fetching
-          setTimeout(() => loadSpotifyPlaylists(true), 500);
-        } catch (err) {
-          setSettingsError(err.message);
-        }
-      } else {
-        if (isSpotifyLoggedIn()) loadSpotifyPlaylists(true);
-        if (isAppleLoggedIn()) loadApplePlaylists(true);
-        if (isYouTubeLoggedIn()) loadYoutubePlaylists(true);
-      }
-    }
-    checkCallback();
-  }, []);
-
-  // ── Load a playlist by ID (works for all services) ────
-  const loadPlaylist = useCallback(async (id, service) => {
-    setLoadingPlaylist(true);
-    setSettingsError(null);
-    try {
-      const fetcher = service === 'apple'
-        ? fetchAppleTracks
-        : service === 'youtube'
-          ? fetchYouTubeTracks
-          : fetchSpotifyTracks;
-      const tracks = await fetcher(id);
-      if (tracks.length === 0) {
-        setSettingsError('Playlist is empty');
-        return;
-      }
-      setStreamTracks(tracks);
-      setSource('streaming');
-    } catch (err) {
-      setSettingsError(err.message);
-    } finally {
-      setLoadingPlaylist(false);
-    }
-  }, []);
-
   const { theme, toggleTheme, assets } = useTheme();
-
   const [recordFrame, setRecordFrame] = useState(0);
   const [needleFrame, setNeedleFrame] = useState(0);
-  const [isPink, setIsPink] = useState(theme === 'dark');
+  const [isDefaultTheme, setDefaultTheme] = useState(theme === 'dark');
   const [swapping, setSwapping] = useState(false);
   const [needleLifted, setNeedleLifted] = useState(false);
   const [starHovered, setStarHovered] = useState(false);
@@ -323,8 +171,8 @@ export default function App() {
   // tracks load async. Both should silently set the ref without animating.
   const prevTrackRef = useRef(null);
 
-  const currentFrames = isPink ? assets.recordFramesA : assets.recordFramesB;
-  const incomingFrames = isPink ? assets.recordFramesB : assets.recordFramesA;
+  const currentFrames = isDefaultTheme ? assets.recordFramesA : assets.recordFramesB;
+  const incomingFrames = isDefaultTheme ? assets.recordFramesB : assets.recordFramesA;
 
   // Spin animation while playing
   useEffect(() => {
@@ -357,7 +205,7 @@ export default function App() {
 
     // Finish swap, switch color
     setTimeout(() => {
-      setIsPink((p) => !p);
+      setDefaultTheme((p) => !p);
       setRecordFrame(0);
       setSwapping(false);
     }, 1000);
@@ -604,203 +452,16 @@ export default function App() {
       )}
 
       {/* Settings panel */}
-      {showSettings && (
-        <div className="settings-panel">
-          <div className="settings-panel-inner">
-            <div className="settings-label">theme</div>
-            <div className="settings-theme-row">
-              <button
-                className={`settings-theme-btn ${theme === 'dark' ? 'active' : ''}`}
-                onClick={() => { if (theme !== 'dark') toggleTheme(); }}
-              >
-                dark
-              </button>
-              <button
-                  className={`settings-theme-btn ${theme === 'light' ? 'active' : ''}`}
-                onClick={() => { if (theme !== 'light') toggleTheme(); }}
-              >
-                light
-              </button>
-            </div>
-            <div className="settings-label">Wanna listen something else?</div>
-            <div className="settings-label">You can copy/paste a YouTube playlist URL!</div>
-            <SettingsDropdown
-              value={musicService}
-              options={[
-                { value: 'local', label: 'local' },
-                { value: 'youtube', label: 'youtube' },
-              ]}
-              onChange={(next) => {
-                setMusicService(next);
-                try { localStorage.setItem('cupid-player-music-service', next); } catch { /* ignore */ }
-                if (next === 'local') setSource('local');
-              }}
-            />
-
-            {musicService === 'local' && (
-              <button
-                className="settings-theme-btn"
-                onClick={loadLocalPlaylist}
-              >
-                reload
-              </button>
-            )}
-
-            {musicService === 'spotify' && (
-              !spotifyConnected ? (
-                <button className="settings-theme-btn" onClick={() => spotifyLogin()}>
-                  log in
-                </button>
-              ) : (
-                <>
-                  <PlaylistList
-                    loading={loadingPlaylists}
-                    playlists={spotifyPlaylists}
-                    loadingPlaylist={loadingPlaylist}
-                    onSelect={(id) => loadPlaylist(id, 'spotify')}
-                  />
-                  <div className="settings-theme-row">
-                    <button
-                      className={`settings-theme-btn ${loadingPlaylists ? 'disabled' : ''}`}
-                      disabled={loadingPlaylists}
-                      onClick={() => loadSpotifyPlaylists()}
-                    >
-                      refresh
-                    </button>
-                    <button className="settings-theme-btn" onClick={() => {
-                      spotifyLogout();
-                      setSpotifyConnected(false);
-                      setSpotifyPlaylists([]);
-                      if (source === 'streaming') setSource('local');
-                    }}>
-                      logout
-                    </button>
-                  </div>
-                </>
-              )
-            )}
-
-            {musicService === 'apple' && (
-              !appleConnected ? (
-                <button className="settings-theme-btn" onClick={async () => {
-                  try {
-                    await appleLogin();
-                    setAppleConnected(true);
-                    loadApplePlaylists();
-                  } catch (err) {
-                    setSettingsError(err.message);
-                  }
-                }}>
-                  log in
-                </button>
-              ) : (
-                <>
-                  <PlaylistList
-                    loading={loadingPlaylists}
-                    playlists={applePlaylists}
-                    loadingPlaylist={loadingPlaylist}
-                    onSelect={(id) => loadPlaylist(id, 'apple')}
-                  />
-                  <div className="settings-theme-row">
-                    <button
-                      className={`settings-theme-btn ${loadingPlaylists ? 'disabled' : ''}`}
-                      disabled={loadingPlaylists}
-                      onClick={() => loadApplePlaylists()}
-                    >
-                      refresh
-                    </button>
-                    <button className="settings-theme-btn" onClick={() => {
-                      appleLogout();
-                      setAppleConnected(false);
-                      setApplePlaylists([]);
-                      if (source === 'streaming') setSource('local');
-                    }}>
-                      logout
-                    </button>
-                  </div>
-                </>
-              )
-            )}
-
-            {musicService === 'youtube' && (
-              isYouTubeConfigured() ? (
-                !youtubeConnected ? (
-                  <button
-                    className={`settings-theme-btn ${youtubeLoggingIn ? 'disabled' : ''}`}
-                    disabled={youtubeLoggingIn}
-                    onClick={async () => {
-                      setYoutubeLoggingIn(true);
-                      setSettingsError(null);
-                      try {
-                        await youtubeLogin();
-                        setYoutubeConnected(true);
-                        loadYoutubePlaylists();
-                      } catch (err) {
-                        setSettingsError(err.message);
-                      } finally {
-                        setYoutubeLoggingIn(false);
-                      }
-                    }}
-                  >
-                    {youtubeLoggingIn ? 'waiting for browser...' : 'log in with google'}
-                  </button>
-                ) : (
-                  <>
-                    <PlaylistList
-                      loading={loadingPlaylists}
-                      playlists={youtubePlaylists}
-                      loadingPlaylist={loadingPlaylist}
-                      onSelect={(id) => loadPlaylist(id, 'youtube')}
-                    />
-                    <div className="settings-theme-row">
-                      <button
-                        className={`settings-theme-btn ${loadingPlaylists ? 'disabled' : ''}`}
-                        disabled={loadingPlaylists}
-                        onClick={() => loadYoutubePlaylists()}
-                      >
-                        refresh
-                      </button>
-                      <button className="settings-theme-btn" onClick={() => {
-                        youtubeLogout();
-                        setYoutubeConnected(false);
-                        setYoutubePlaylists([]);
-                        if (source === 'streaming') setSource('local');
-                      }}>
-                        logout
-                      </button>
-                    </div>
-                  </>
-                )
-              ) : (
-                <>
-                  <input
-                    className="settings-input"
-                    type="text"
-                    placeholder="paste a youtube playlist link"
-                    value={youtubeUrlInput}
-                    onChange={(e) => setYoutubeUrlInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && youtubeUrlInput.trim()) {
-                        loadYoutubePlaylistFromUrl(youtubeUrlInput.trim());
-                      }
-                    }}
-                    disabled={loadingPlaylist}
-                  />
-                  <button
-                    className={`settings-theme-btn ${loadingPlaylist || !youtubeUrlInput.trim() ? 'disabled' : ''}`}
-                    onClick={() => loadYoutubePlaylistFromUrl(youtubeUrlInput.trim())}
-                    disabled={loadingPlaylist || !youtubeUrlInput.trim()}
-                  >
-                    {loadingPlaylist ? 'loading...' : 'load playlist'}
-                  </button>
-                </>
-              )
-            )}
-
-            {settingsError && <div className="settings-error">{settingsError}</div>}
-          </div>
-        </div>
-      )}
+      <SettingsPanel
+        player={player}
+        showSettings={showSettings}
+        source={source}
+        setSource={setSource}
+        setLocalTracks={setLocalTracks}
+        setStreamTracks={setStreamTracks}
+        theme={theme}
+        toggleTheme={toggleTheme}
+      />
     </div>
   );
 }

@@ -112,75 +112,6 @@
   top: calc((48 - 23) / 306 * 100vw);
 }
 
-.settings-panel {
-  position: absolute;
-  top: calc((70 - 23) / 306 * 100vw);
-  right: calc(5 / 306 * 100vw);
-  z-index: 300;
-  -webkit-app-region: no-drag;
-  pointer-events: auto;
-}
-
-.settings-panel-inner {
-  background: var(--color-primary);
-  border: calc(2 / 306 * 100vw) solid var(--color-secondary);
-  border-radius: calc(4 / 306 * 100vw);
-  padding: calc(6 / 306 * 100vw);
-  width: calc(140 / 306 * 100vw);
-  max-height: calc(260 / 306 * 100vw);
-  overflow-x: break-word;
-  overflow-y: auto;
-  scrollbar-width: none;
-  display: flex;
-  flex-direction: column;
-  gap: calc(4 / 306 * 100vw);
-  word-break: break-all;
-}
-
-.settings-label {
-  font-size: calc(11 / 306 * 100vw);
-  color: var(--font-color);
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.settings-theme-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(4 / 306 * 100vw);
-}
-
-.settings-theme-btn {
-  font-size: calc(10 / 306 * 100vw);
-  background: none;
-  border: calc(1 / 306 * 100vw) solid var(--color-panel-text);
-  border-radius: calc(2 / 306 * 100vw);
-  color: var(--color-panel-text);
-  padding: calc(3 / 306 * 100vw) calc(6 / 306 * 100vw);
-  cursor: pointer;
-}
-
-.settings-theme-btn.active {
-  background: var(--color-panel-text);
-  color: var(--color-primary);
-}
-
-.settings-input {
-  font-size: calc(10 / 306 * 100vw);
-  background: rgba(0, 0, 0, 0.3);
-  border: calc(1 / 306 * 100vw) solid var(--color-panel-text);
-  border-radius: calc(2 / 306 * 100vw);
-  color: var(--color-panel-text);
-  padding: calc(3 / 306 * 100vw) calc(4 / 306 * 100vw);
-  outline: none;
-}
-
-.settings-error {
-  font-size: calc(9 / 306 * 100vw);
-  color: #ff6b6b;
-}
-
 /* Volume hover zone — covers icon + bar area as one block */
 .volume-hover-zone {
   position: absolute;
@@ -237,7 +168,6 @@
   pointer-events: none;
   z-index: 999;
 }
-
 
 /* Debug overlay for volume bar seek area (absolute positioned to match) */
 .volume-bar-area-debug {
