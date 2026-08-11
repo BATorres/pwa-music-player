@@ -80,6 +80,9 @@ export default function App() {
   const [volumeDragging, setVolumeDragging] = useState(false);
   const volumeBarRef = useRef(null);
   const [showDebug] = useState(false);
+  const [playHovered, setPlayHovered] = useState(false);
+  const [nextHovered, setNextHovered] = useState(false);
+  const [prevHovered, setPrevHovered] = useState(false);
 
   const local = useAudioPlayer(localTracks, playMode, window.cupid?.getLocalAudioPath);
   const streaming = useSpotifyPlayer(streamTracks, playMode);
@@ -259,9 +262,6 @@ export default function App() {
       {/* Frame overlay (no background) to clip sliding records */}
       <img src={assets.frameNoBg} className="layer frame-overlay" alt="" draggable={false} />
 
-      {/* Decorative */}
-      {/* <img src={assets.plant} className="layer layer-ui" alt="" draggable={false} /> */}
-
       {/* Progress bar layers */}
       <img src={assets.progressBar} className="layer layer-ui" alt="" draggable={false} />
       <img
@@ -284,9 +284,9 @@ export default function App() {
       />
 
       {/* Playback control layers (visual only) */}
-      <img src={assets.backwardsButton} className="layer layer-ui" alt="" draggable={false} />
-      <img src={isPlaying ? assets.pauseButton : assets.playButton} className="layer layer-ui" alt="" draggable={false} />
-      <img src={assets.forwardsButton} className="layer layer-ui" alt="" draggable={false} />
+      <img src={assets.backwardsButton} className={`layer layer-ui ${prevHovered ? 'prev-hovered' : ''}`} alt="" draggable={false} />
+      <img src={isPlaying ? assets.pauseButton : assets.playButton} className={`layer layer-ui ${playHovered ? 'play-hovered' : ''}`} alt="" draggable={false} />
+      <img src={assets.forwardsButton} className={`layer layer-ui ${nextHovered ? 'next-hovered' : ''}`} alt="" draggable={false} />
 
       {/* Volume/mute button layer */}
       <img
@@ -383,9 +383,12 @@ export default function App() {
       />
 
       {/* Playback control click targets */}
-      <div className="btn btn-prev" onClick={prev} />
-      <div className="btn btn-play" onClick={togglePlay} />
-      <div className="btn btn-next" onClick={next} />
+      {/* <div className="btn btn-prev" onClick={prev} /> */}
+      <div className="btn btn-prev" onClick={prev} onMouseEnter={() => setPrevHovered(true)} onMouseLeave={() => setPrevHovered(false)} />
+      {/* <div className="btn btn-play" onClick={togglePlay} /> */}
+      <div className="btn btn-play" onClick={togglePlay} onMouseEnter={() => setPlayHovered(true)} onMouseLeave={() => setPlayHovered(false)} />
+      {/* <div className="btn btn-next" onClick={next} /> */}
+      <div className="btn btn-next" onClick={next} onMouseEnter={() => setNextHovered(true)} onMouseLeave={() => setNextHovered(false)} />
 
       {/* Volume bar layers — shown on hover or drag */}
       {(volumeHovered || volumeDragging) && (
