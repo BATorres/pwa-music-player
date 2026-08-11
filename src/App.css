@@ -56,7 +56,6 @@
   height: calc(50 / 306 * 100vw); /* top area of frame for dragging */
   z-index: 100;
   -webkit-app-region: drag;
-
 }
 
 /* Custom resize handles at frame corners (below bow) */
@@ -225,78 +224,8 @@
   pointer-events: none;
 }
 
-.record-player, .record-player-top {
-  position: absolute;
-  /* width: calc(200 / 306 * 100vw); */
-  width: 140vw;
-  left: 50%;
-  /* top: calc(120 / 306 * 100vw); */
-  bottom: 7%;
-  transform: translateX(-50%);
-  image-rendering: pixelated;
-  pointer-events: none;
-  user-select: none;
-  z-index: 10;
-}
-
-.record-player-top {
-  opacity: 0.6;
-  z-index: 30;
-}
-
-.frame-overlay {
-  z-index: 15;
-}
-
 .layer-ui {
   z-index: 20;
-}
-
-.record-slide-out {
-  animation: slide-out 0.6s ease-in forwards;
-}
-
-.record-slide-in {
-  animation: slide-in 0.6s ease-out forwards;
-}
-
-@keyframes slide-out {
-  0% { transform: translate(-50%, 0); }
-  100% { transform: translate(calc(50% - 60vw), 20vw); }
-}
-
-@keyframes slide-in {
-  0% { transform: translate(calc(50% - 60vw), 20vw); }
-  100% { transform: translate(-50%, 0); }
-}
-
-.album-frame-layer {
- position: absolute;
-  left: 50%;
-  bottom: 7%;
-  transform: translateX(-50%);
-  z-index: 45;
-}
-
-.album-mask {
-  position: absolute;
-  left: calc((280 - 110) / 306 * 100vw);
-  top: calc((190 - 23) / 306 * 100vw);
-  width: calc(72 / 306 * 100vw);
-  height: calc(72 / 306 * 100vw);
-  clip-path: url(#album-mask);
-  overflow: hidden;
-  z-index: 1;
-  pointer-events: none;
-  border: 2px solid var(--font-color);
-  border-radius: 5%;
-}
-
-.album-art {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  image-rendering: pixelated;
 }
 
 .track-info {
