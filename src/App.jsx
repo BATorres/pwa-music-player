@@ -1,39 +1,16 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
 import './App.css';
-import useAudioPlayer from './hooks/useAudioPlayer.js';
-import useSpotifyPlayer from './hooks/useSpotifyPlayer.js';
-import useTheme from './hooks/useTheme.js';
 
 // Components
 import RecordPlayer from './components/Player/RecordPlayer/RecordPlayer.jsx';
 import ProgressBar from './components/Player/ProgressBar/ProgressBar.jsx';
 import SettingsPanel from './components/Settings/SettingsPanel/SettingsPanel.jsx';
 
-function useResize(corner) {
-  const onMouseDown = useCallback((e) => {
-    e.preventDefault();
-    let lastX = e.screenX;
-    let lastY = e.screenY;
-
-    const onMouseMove = (e) => {
-      const dx = e.screenX - lastX;
-      const dy = e.screenY - lastY;
-      lastX = e.screenX;
-      lastY = e.screenY;
-      window.cupid?.resize({ dx, dy, corner });
-    };
-
-    const onMouseUp = () => {
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
-    };
-
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
-  }, [corner]);
-
-  return onMouseDown;
-}
+// Hooks
+import useAudioPlayer from './hooks/useAudioPlayer.js';
+import useSpotifyPlayer from './hooks/useSpotifyPlayer.js';
+import useResize from './hooks/useResize.js';
+import useTheme from './hooks/useTheme.js';
 
 function formatTime(seconds) {
   if (!seconds || !isFinite(seconds) || seconds < 0) return '0:00';
