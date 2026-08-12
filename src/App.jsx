@@ -4,15 +4,10 @@ import useAudioPlayer from './hooks/useAudioPlayer.js';
 import useSpotifyPlayer from './hooks/useSpotifyPlayer.js';
 import useTheme from './hooks/useTheme.js';
 
-import progressBarStars from '../assets/progress_bar_stars.png';
-import star from '../assets/star.png';
-import starSelected from '../assets/star_selected.png';
-
-import progressBarThorns from '../assets/progress_bar_thorns.png';
-import ghost from '../assets/ghost.png';
-import ghostSelected from '../assets/ghost_selected.png';
-import SettingsPanel from './components/Settings/SettingsPanel/SettingsPanel.jsx';
+// Components
 import RecordPlayer from './components/Player/RecordPlayer/RecordPlayer.jsx';
+import ProgressBar from './components/Player/ProgressBar/ProgressBar.jsx';
+import SettingsPanel from './components/Settings/SettingsPanel/SettingsPanel.jsx';
 
 function useResize(corner) {
   const onMouseDown = useCallback((e) => {
@@ -119,32 +114,7 @@ export default function App() {
   }, []);
 
   const { theme, toggleTheme, assets } = useTheme();
-  const [starHovered, setStarHovered] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const [hoverProgress, setHoverProgress] = useState(null);
-  const seekRef = useRef(null);
-
-  useEffect(() => {
-    if (!dragging) return;
-    const onMouseMove = (e) => {
-      const rect = seekRef.current.getBoundingClientRect();
-      const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-      setHoverProgress(pct);
-      seek(pct);
-    };
-    const onMouseUp = () => {
-      setDragging(false);
-      setStarHovered(false);
-      setHoverProgress(null);
-    };
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
-    return () => {
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
-    };
-  }, [dragging, seek]);
 
   useEffect(() => {
     if (!volumeDragging) return;
@@ -165,11 +135,7 @@ export default function App() {
       window.removeEventListener('mouseup', onMouseUp);
     };
   }, [volumeDragging, setVolume]);
-  const [needleChangeFrame, setNeedleChangeFrame] = useState(0);
-  // null sentinel = haven't seen any track yet; 'No track' = placeholder while
-  // tracks load async. Both should silently set the ref without animating.
-  const prevTrackRef = useRef(null);
-
+  
   const resizeTL = useResize('top-left');
   const resizeTR = useResize('top-right');
   const resizeBL = useResize('bottom-left');
@@ -186,31 +152,16 @@ export default function App() {
       <RecordPlayer 
         assets={assets} 
         isPlaying={isPlaying} 
-        prevTrackRef={prevTrackRef} 
         track={track} 
         theme={theme}
       />
 
       {/* Progress bar layers */}
-      <img src={assets.progressBar} className="layer layer-ui" alt="" draggable={false} />
-      <img
-        src={progressBarThorns}
-        className="layer layer-ui"
-        alt=""
-        draggable={false}
-        style={{
-          clipPath: `inset(0 ${(1 - (131 + (hoverProgress ?? progress) * 226 + 10) / 512) * 100}% 0 0)`,
-        }}
-      />
-      <img
-        src={starHovered ? ghostSelected : ghost}
-        className={`layer layer-ui star-indicator ${starHovered ? 'star-hovered' : ''}`}
-        alt=""
-        draggable={false}
-        style={{
-          transform: `translateX(calc(-3 / 306 * 100vw + ${(hoverProgress ?? progress) * (226 / 512) * 171.9}vw))`,
-        }}
-      />
+      <ProgressBar 
+        assets={assets} 
+        progress={progress} 
+        seek={seek} 
+      /> 
 
       {/* Playback control layers (visual only) */}
       <img src={assets.backwardsButton} className={`layer layer-ui ${prevHovered ? 'prev-hovered' : ''}`} alt="" draggable={false} />
@@ -268,22 +219,6 @@ export default function App() {
       <div className="resize-handle top-right" onMouseDown={resizeTR} />
       <div className="resize-handle bottom-left" onMouseDown={resizeBL} />
       <div className="resize-handle bottom-right" onMouseDown={resizeBR} />
-
-      {/* Progress bar seek target */}
-      <div
-        className="progress-seek"
-        ref={seekRef}
-        onMouseEnter={() => setStarHovered(true)}
-        onMouseLeave={() => { if (!dragging) { setStarHovered(false); } }}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          setDragging(true);
-          const rect = e.currentTarget.getBoundingClientRect();
-          const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-          setHoverProgress(pct);
-          seek(pct);
-        }}
-      />
 
       {/* Playback control click targets */}
       {/* <div className="btn btn-prev" onClick={prev} /> */}

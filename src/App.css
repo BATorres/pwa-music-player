@@ -177,19 +177,6 @@
   z-index: 999;
 }
 
-/* Progress bar seek target */
-.progress-seek {
-  position: absolute;
-  left: calc((140 - 110) / 306 * 100vw);
-  top: calc((469 - 23) / 306 * 100vw);
-  width: calc(241 / 306 * 100vw);
-  height: calc(6 / 306 * 100vw);
-  z-index: 150;
-  cursor: pointer;
-  -webkit-app-region: no-drag;
-}
-
-
 /* Playback control click targets */
 .btn-prev {
   left: calc((172 - 110) / 306 * 100vw);

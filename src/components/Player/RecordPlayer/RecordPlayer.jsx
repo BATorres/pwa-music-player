@@ -1,14 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import './RecordPlayer.css';
 
-export default function RecordPlayer({ assets, isPlaying, prevTrackRef, track, theme }) {
+export default function RecordPlayer({ assets, isPlaying, track, theme }) {
   const [isDefaultTheme, setDefaultTheme] = useState(theme === 'dark');
   const [needleChangeFrame, setNeedleChangeFrame] = useState(0);
   const [needleFrame, setNeedleFrame] = useState(0);
   const [needleLifted, setNeedleLifted] = useState(false);
   const [recordFrame, setRecordFrame] = useState(0);
   const [swapping, setSwapping] = useState(false);
+
+  const prevTrackRef = useRef(null);
 
   const currentFrames = isDefaultTheme ? assets.recordFramesA : assets.recordFramesB;
   const incomingFrames = isDefaultTheme ? assets.recordFramesB : assets.recordFramesA;
