@@ -331,29 +331,52 @@ async function fetchYouTubePlaylistViaYtDlp(url) {
 
   const data = JSON.parse(stdout);
   const entries = data.entries || [];
-  const filteredEntries = entries.filter((e) => e && e.id && YT_ID_RE.test(e.id));
-  let modifiedEntries = [];
+  const filteredEntries = entries.filter((e) => {
+    if (!e || !e.id || !YT_ID_RE.test(e.id)) return false;
+    if (e.is_live) return false;
+    if (typeof e.duration === 'number' && e.duration <= 0) return false;
+    return true;
+  });
+  const modifiedEntries = [];
 
-  for (const e of filteredEntries) { 
-    const entry = {
-      videoId: e.id,
-      title: e.title || e.id,
-      artist: await enrichMetadata(e.id),
-      duration: typeof e.duration === 'number' ? e.duration : null,
-    };
-    modifiedEntries.push(entry);
+  for (const e of filteredEntries) {
+    try {
+      const entry = {
+        videoId: e.id,
+        title: e.title || e.id,
+        artist: await enrichMetadata(e.id),
+        duration: typeof e.duration === 'number' ? e.duration : null,
+      };
+      modifiedEntries.push(entry);
+    } catch (err) {
+      console.warn('[youtube playlist] skipped item:', e?.id, err?.message || err);
+      modifiedEntries.push({
+        videoId: e.id,
+        title: e.title || e.id,
+        artist: '',
+        duration: typeof e.duration === 'number' ? e.duration : null,
+      });
+    }
   }
 
   return modifiedEntries;
 }
 
-// Best-effort enrichment of playlist entries with artist metadata from youtubei.js
+// Best-effort enrichment of playlist entries with artist metadata from youtubei.js.
+// Some tracks in public playlists trigger youtubei.js parser mismatches (Message vs
+// SectionList / MusicQueue / RichGrid); that should not take down the whole playlist.
 async function enrichMetadata(youtubeId) {
-  const innerTubeInstance = await getInnertube();
-  const songInfo = await innerTubeInstance.music.getInfo(youtubeId);
+  if (!youtubeId || !YT_ID_RE.test(youtubeId)) return '';
 
-  // If is needed, it could return other properties
-  return songInfo?.basic_info?.author;
+  try {
+    const innerTubeInstance = await getInnertube();
+    const songInfo = await innerTubeInstance.music.getInfo(youtubeId);
+    const author = songInfo?.basic_info?.author;
+    return typeof author === 'string' ? author : '';
+  } catch (err) {
+    console.warn('[youtube metadata] failed for', youtubeId, err?.message || err);
+    return '';
+  }
 }
 
 const isDev = process.env.NODE_ENV === 'development';

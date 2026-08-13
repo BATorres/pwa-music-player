@@ -9,6 +9,20 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
+export function findNextTrackIndex(currentIndex, tracks, direction = 1) {
+  if (!Array.isArray(tracks) || tracks.length === 0) return 0;
+  const len = tracks.length;
+  if (len === 1) return 0;
+
+  const start = (currentIndex + len) % len;
+  for (let offset = 1; offset <= len; offset += 1) {
+    const candidate = (start + direction * offset + len) % len;
+    if (tracks[candidate]) return candidate;
+  }
+
+  return start;
+}
+
 export default function useSpotifyPlayer(tracks, playMode = 'normal') {
   const audioRef = useRef(new Audio());
   const playModeRef = useRef(playMode);
@@ -66,13 +80,19 @@ export default function useSpotifyPlayer(tracks, playMode = 'normal') {
           ? await window.cupid.getStreamUrlById(t.videoId)
           : await window.cupid.getStreamUrl(t.title, t.artist);
         if (cancelled) return;
-        // setting src triggers loading; an explicit audio.load() would reset it
         audio.src = url;
+        audio.load();
         if (isPlayingRef.current) {
           audio.play().catch(() => {});
         }
       } catch (err) {
         console.error('Failed to get stream:', err.message);
+        if (!cancelled) {
+          const nextIndex = findNextTrackIndex(trackIndex, tracks, 1);
+          if (nextIndex !== trackIndex) {
+            setTrackIndex(nextIndex);
+          }
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -135,6 +155,14 @@ export default function useSpotifyPlayer(tracks, playMode = 'normal') {
       setDuration(audio.duration);
     };
 
+    const onError = () => {
+      console.warn('[spotify-player] track failed to play, skipping to next item');
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load();
+      setTrackIndex((prev) => findNextTrackIndex(prev, tracks, 1));
+    };
+
     const onEnded = () => {
       if (playModeRef.current === 'repeat') {
         audio.currentTime = 0;
@@ -156,14 +184,16 @@ export default function useSpotifyPlayer(tracks, playMode = 'normal') {
 
     audio.addEventListener('timeupdate', onTimeUpdate);
     audio.addEventListener('loadedmetadata', onLoadedMetadata);
+    audio.addEventListener('error', onError);
     audio.addEventListener('ended', onEnded);
 
     return () => {
       audio.removeEventListener('timeupdate', onTimeUpdate);
       audio.removeEventListener('loadedmetadata', onLoadedMetadata);
+      audio.removeEventListener('error', onError);
       audio.removeEventListener('ended', onEnded);
     };
-  }, [tracks.length]);
+  }, [tracks]);
 
   // ── Playback controls ────────────────────────────────────
 
