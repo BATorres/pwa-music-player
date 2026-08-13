@@ -108,18 +108,6 @@
   top: calc((48 - 23) / 306 * 100vw);
 }
 
-/* Shuffle/repeat click target */
-.btn-playmode {
-  position: absolute;
-  left: calc((139 - 110) / 306 * 100vw);
-  top: calc((425 - 23) / 306 * 100vw);
-  width: calc(25 / 306 * 100vw);
-  height: calc(20 / 306 * 100vw);
-  z-index: 150;
-  cursor: pointer;
-  -webkit-app-region: no-drag;
-}
-
 /* Debug overlay for positioning */
 .debug-overlay {
   background: rgba(255, 0, 0, 0.25);
@@ -138,28 +126,6 @@
   background: rgba(0, 0, 255, 0.25);
   border: 1px solid rgba(0, 0, 255, 0.6);
   z-index: 999;
-}
-
-/* Playback control click targets */
-.btn-prev {
-  left: calc((172 - 110) / 306 * 100vw);
-  top: calc((418 - 23) / 306 * 100vw);
-  width: calc(44 / 306 * 100vw);
-  height: calc(31 / 306 * 100vw);
-}
-
-.btn-play {
-  left: calc((240 - 110) / 306 * 100vw);
-  top: calc((418 - 23) / 306 * 100vw);
-  width: calc(44 / 306 * 100vw);
-  height: calc(31 / 306 * 100vw);
-}
-
-.btn-next {
-  left: calc((310 - 110) / 306 * 100vw);
-  top: calc((418 - 23) / 306 * 100vw);
-  width: calc(44 / 306 * 100vw);
-  height: calc(31 / 306 * 100vw);
 }
 
 /* Now playing section — album art + text */
@@ -371,16 +337,4 @@
   font-size: calc(9 / 306 * 100vw);
   color: #c44;
   word-break: break-word;
-}
-
-/* Hover animations for action buttons */
-.layer.layer-ui.play-hovered,
-.layer.layer-ui.next-hovered,
-.layer.layer-ui.prev-hovered {
-  animation: bounce 1s infinite alternate;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
 }

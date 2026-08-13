@@ -1,7 +1,8 @@
-import { useCallback, useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import './App.css';
 
 // Components
+import PlaybackControl from './components/Player/PlaybackControl/PlaybackControl.jsx';
 import RecordPlayer from './components/Player/RecordPlayer/RecordPlayer.jsx';
 import ProgressBar from './components/Player/ProgressBar/ProgressBar.jsx';
 import VolumeBar from './components/Player/VolumeBar/VolumeBar.jsx';
@@ -46,14 +47,13 @@ function MarqueeText({ className, text }) {
 
 export default function App() {
   // ── Source state ─────────────────────────────────────────
+  const { theme, toggleTheme, assets } = useTheme();
+  const [showSettings, setShowSettings] = useState(false);
   const [source, setSource] = useState('local'); // 'local' | 'streaming'
   const [streamTracks, setStreamTracks] = useState([]);
   const [localTracks, setLocalTracks] = useState([]);
   const [playMode, setPlayMode] = useState('normal'); // 'normal' | 'shuffle' | 'repeat'
   const [showDebug] = useState(false);
-  const [playHovered, setPlayHovered] = useState(false);
-  const [nextHovered, setNextHovered] = useState(false);
-  const [prevHovered, setPrevHovered] = useState(false);
 
   const local = useAudioPlayer(localTracks, playMode, window.cupid?.getLocalAudioPath);
   const streaming = useSpotifyPlayer(streamTracks, playMode);
@@ -83,13 +83,6 @@ export default function App() {
     muted,
     toggleMute,
   } = player;
-
-  const cyclePlayMode = useCallback(() => {
-    setPlayMode((m) => m === 'normal' ? 'shuffle' : m === 'shuffle' ? 'repeat' : 'normal');
-  }, []);
-
-  const { theme, toggleTheme, assets } = useTheme();
-  const [showSettings, setShowSettings] = useState(false);
   
   const resizeTL = useResize('top-left');
   const resizeTR = useResize('top-right');
@@ -117,20 +110,6 @@ export default function App() {
         progress={progress} 
         seek={seek} 
       /> 
-
-      {/* Playback control layers (visual only) */}
-      <img src={assets.backwardsButton} className={`layer layer-ui ${prevHovered ? 'prev-hovered' : ''}`} alt="" draggable={false} />
-      <img src={isPlaying ? assets.pauseButton : assets.playButton} className={`layer layer-ui ${playHovered ? 'play-hovered' : ''}`} alt="" draggable={false} />
-      <img src={assets.forwardsButton} className={`layer layer-ui ${nextHovered ? 'next-hovered' : ''}`} alt="" draggable={false} />
-
-      {/* Shuffle/repeat button layer */}
-      <img
-        src={playMode === 'repeat' ? assets.repeatButton : assets.shuffleButton}
-        className="layer layer-ui"
-        alt=""
-        draggable={false}
-        style={{ opacity: playMode === 'normal' ? 0.4 : 0.8 }}
-      />
 
       {/* Window control layers (visual only) */}
       <img src={assets.minimizerButton} className="layer layer-ui" alt="" draggable={false} />
@@ -166,13 +145,16 @@ export default function App() {
       <div className="resize-handle bottom-left" onMouseDown={resizeBL} />
       <div className="resize-handle bottom-right" onMouseDown={resizeBR} />
 
-      {/* Playback control click targets */}
-      {/* <div className="btn btn-prev" onClick={prev} /> */}
-      <div className="btn btn-prev" onClick={prev} onMouseEnter={() => setPrevHovered(true)} onMouseLeave={() => setPrevHovered(false)} />
-      {/* <div className="btn btn-play" onClick={togglePlay} /> */}
-      <div className="btn btn-play" onClick={togglePlay} onMouseEnter={() => setPlayHovered(true)} onMouseLeave={() => setPlayHovered(false)} />
-      {/* <div className="btn btn-next" onClick={next} /> */}
-      <div className="btn btn-next" onClick={next} onMouseEnter={() => setNextHovered(true)} onMouseLeave={() => setNextHovered(false)} />
+      {/* Playback control */}
+      <PlaybackControl 
+        assets={assets} 
+        isPlaying={isPlaying} 
+        next={next}
+        playMode={playMode}
+        prev={prev}
+        setPlayMode={setPlayMode}
+        togglePlay={togglePlay}
+      /> 
 
       {/* Volume bar */}
       <VolumeBar 
@@ -182,9 +164,6 @@ export default function App() {
         toggleMute={toggleMute}
         volume={volume}
       /> 
-
-      {/* Shuffle/repeat click target */}
-      <div className="btn btn-playmode" onClick={cyclePlayMode} title={playMode} />
 
       {/* Window control click targets */}
       <div className="btn btn-minimize" onClick={() => window.cupid?.minimize()} />
