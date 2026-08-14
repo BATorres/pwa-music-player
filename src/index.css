@@ -1,13 +1,22 @@
 @font-face {
-  font-family: 'Rainyhearts';
-  src: url('../font/rainyhearts.ttf') format('truetype');
+  font-family: 'RainyHearts';
+  src: url('../font/RainyHearts.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'GothicPixels';
+  src: url('../font/GothicPixels.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 :root {
-  font-family: 'Rainyhearts', monospace;
+  font-family: 'RainyHearts', monospace;
+  --gothic-font: 'GothicPixels', monospace;
   color-scheme: dark;
+  --font-color: #d6d6d6;
 }
 
 html,

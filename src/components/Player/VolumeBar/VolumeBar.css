@@ -1,0 +1,36 @@
+/* Volume hover zone — covers icon + bar area as one block */
+.volume-hover-zone {
+  position: absolute;
+  left: calc((363 - 110) / 306 * 100vw);
+  bottom: calc((512 - 412 - 23) / 306 * 100vw);
+  width: calc(20 / 306 * 100vw);
+  height: calc(18 / 306 * 100vw);
+  z-index: 155;
+  -webkit-app-region: no-drag;
+}
+
+.btn-volume-icon {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: calc(20 / 306 * 100vw);
+  height: calc(20 / 306 * 100vw);
+  cursor: pointer;
+}
+
+.volume-hover-zone.expanded {
+  height: calc((420 - 338 + 25) / 306 * 100vw);
+}
+
+.volume-bar-area {
+  position: absolute;
+  left: calc((357 - 355) / 306 * 100vw);
+  top: calc(5 / 306 * 100vw);
+  width: calc(10 / 306 * 100vw);
+  height: calc((420 - 338) / 306 * 100vw);
+  cursor: pointer;
+}
+
+.layer.volume-bar-layer {
+  z-index: 150;
+}

@@ -331,14 +331,52 @@ async function fetchYouTubePlaylistViaYtDlp(url) {
 
   const data = JSON.parse(stdout);
   const entries = data.entries || [];
-  return entries
-    .filter((e) => e && e.id && YT_ID_RE.test(e.id))
-    .map((e) => ({
-      videoId: e.id,
-      title: e.title || e.id,
-      artist: e.uploader || e.channel || '',
-      duration: typeof e.duration === 'number' ? e.duration : null,
-    }));
+  const filteredEntries = entries.filter((e) => {
+    if (!e || !e.id || !YT_ID_RE.test(e.id)) return false;
+    if (e.is_live) return false;
+    if (typeof e.duration === 'number' && e.duration <= 0) return false;
+    return true;
+  });
+  const modifiedEntries = [];
+
+  for (const e of filteredEntries) {
+    try {
+      const entry = {
+        videoId: e.id,
+        title: e.title || e.id,
+        artist: await enrichMetadata(e.id),
+        duration: typeof e.duration === 'number' ? e.duration : null,
+      };
+      modifiedEntries.push(entry);
+    } catch (err) {
+      console.warn('[youtube playlist] skipped item:', e?.id, err?.message || err);
+      modifiedEntries.push({
+        videoId: e.id,
+        title: e.title || e.id,
+        artist: '',
+        duration: typeof e.duration === 'number' ? e.duration : null,
+      });
+    }
+  }
+
+  return modifiedEntries;
+}
+
+// Best-effort enrichment of playlist entries with artist metadata from youtubei.js.
+// Some tracks in public playlists trigger youtubei.js parser mismatches (Message vs
+// SectionList / MusicQueue / RichGrid); that should not take down the whole playlist.
+async function enrichMetadata(youtubeId) {
+  if (!youtubeId || !YT_ID_RE.test(youtubeId)) return '';
+
+  try {
+    const innerTubeInstance = await getInnertube();
+    const songInfo = await innerTubeInstance.music.getInfo(youtubeId);
+    const author = songInfo?.basic_info?.author;
+    return typeof author === 'string' ? author : '';
+  } catch (err) {
+    console.warn('[youtube metadata] failed for', youtubeId, err?.message || err);
+    return '';
+  }
 }
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -403,7 +441,7 @@ function createWindow() {
     transparent: true,
     backgroundColor: '#00000000',
     hasShadow: false,
-    icon: path.join(__dirname, '..', 'assets', 'pink', 'favicon.png'),
+    icon: path.join(__dirname, '..', 'assets', 'dark', 'favicon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
@@ -589,9 +627,26 @@ ipcMain.handle('get-stream-url', async (_e, title, artist) => {
 
 ipcMain.handle('get-local-playlist', async () => {
   try {
-    const raw = await fs.promises.readFile(userPlaylistFile(), 'utf8');
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    const { parseFile } = await import('music-metadata');
+    const localFiles = await fs.promises.readdir(userAudioDir());
+    const localPlaylist = localFiles.filter((entry) => /\.(mp3|m4a|flac|wav|aac)$/i.test(entry));
+    let playlist = [];
+
+    for (const track of localPlaylist) {
+      const trackPath = path.join(userAudioDir(), track);
+      const metadata = await parseFile(trackPath);
+      const picture = metadata.common.picture?.[0];
+      const art = picture ? `data:${picture.format};base64,${Buffer.from(picture.data).toString('base64')}` : null;
+      const parsedTrack = {
+        title: metadata.common?.title ?? 'Unknown Title',
+        artist: metadata.common?.artist ?? 'Unknown Artist',
+        album: metadata.common?.album ?? 'Unknown Album',
+        file: track,
+        art,
+      };
+      playlist.push(parsedTrack);
+    }
+    return playlist;
   } catch (err) {
     if (err.code !== 'ENOENT') console.warn('[playlist.json]', err.message);
     return [];
@@ -726,7 +781,7 @@ ipcMain.handle('youtube-oauth-cancel', () => {
 
 app.whenReady().then(() => {
   if (process.platform === 'darwin' && app.dock) {
-    app.dock.setIcon(path.join(__dirname, '..', 'assets', 'pink', 'favicon.png'));
+    app.dock.setIcon(path.join(__dirname, '..', 'assets', 'dark', 'favicon.png'));
   }
 
   seedUserAudioDirIfMissing().catch((err) => console.warn('[seed]', err.message));
