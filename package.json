@@ -67,7 +67,7 @@
     "mac": {
       "target": "dir",
       "category": "public.app-category.music",
-      "icon": "assets/pink/icon.png"
+      "icon": "assets/dark/icon.png"
     },
     "win": {
       "target": "nsis",
@@ -75,7 +75,7 @@
     },
     "linux": {
       "target": "AppImage",
-      "icon": "assets/pink/icon.png"
+      "icon": "assets/dark/icon.png"
     }
   }
 }
