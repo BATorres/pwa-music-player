@@ -1,5 +1,7 @@
 # Awesome Mix Player
 
+![Awesome Mix Player](assets/awesome-mix-player-demo.gif)
+
 ## Disclaimer
 
 This is a custome pixel-art desktop music player originally created by [@cupidbity](https://github.com/cupidbity) with Electron, Vite, and React . You can find the original code [here](https://github.com/cupidbity/cupid-music-player) 
