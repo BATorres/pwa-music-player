@@ -15,10 +15,10 @@ This is a custome pixel-art desktop music player originally created by [@cupidbi
 - Dark and light theme switching with persistent preference
 - YouTube playlists — paste any public playlist URL (no sign-in) or sign in with Google to browse your own
 - Local MP3 playback that works entirely offline
-- Custom frameless window with drag and resize
+- Custome frameless window with drag and resize
 - Dynamic dock/taskbar icon that matches the active theme
 
-## Aditional Featurres/Bugs Fixed
+## Aditional Features/Bugs Fixed
 
 While customizing the app customization, I found some bugs and implemented the next improvements:
 
