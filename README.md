@@ -4,7 +4,7 @@
 
 ## Disclaimer
 
-This is a custome pixel-art desktop music player originally created by [@cupidbity](https://github.com/cupidbity) with Electron, Vite, and React . You can find the original code [here](https://github.com/cupidbity/cupid-music-player) 
+This is a custom pixel-art desktop music player originally created by [@cupidbity](https://github.com/cupidbity) with Electron, Vite, and React. You can find the original code [here](https://github.com/cupidbity/cupid-music-player) 
 
 ## Features
 
@@ -18,13 +18,13 @@ This is a custome pixel-art desktop music player originally created by [@cupidbi
 - Custom frameless window with drag and resize
 - Dynamic dock/taskbar icon that matches the active theme
 
-## Aditional Featurres/Bugs Fixed
+## Additional Features/Bugs Fixed
 
-While customizing the app customization, I found some bugs and implemented the next improvements:
+While customizing the app, I found some bugs and implemented the following improvements:
 
 - I eliminated the use of a JSON file for local tracks; consequently, this feature functions entirely offline.
 - The original code contained a minor bug that prevented the artist's name from displaying correctly when loading a YouTube playlist.
-- Due to certain YouTube policies, some tracks did not work as expected, so, I adjusted the logic to skip them.
+- Due to certain YouTube policies, some tracks did not work as expected, so I adjusted the logic to skip them.
 - Finally, I added a bounce animation to the playback buttons (play/pause, prev, next, shuffle).
 
 ## Getting Started
